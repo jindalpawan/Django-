@@ -10,6 +10,13 @@ class HomePage(TemplateView):
 		posts= Post.objects.all()
 		return render(request, 'blog/home.html', {'alldata':posts})
 
+'''
+class Perma(TemplateView):
+	def get(self,request, pk):
+		obj= get_object_or_404(Post, pk=pk)
+		return render(request, 'blog/')
+		
+'''
 class NewPost(TemplateView):
 	def get(self,request):
 		bg=NewpostForm(request.GET)
