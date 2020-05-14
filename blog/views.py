@@ -8,8 +8,7 @@ from .forms import NewpostForm
 class HomePage(TemplateView):
 	def get(self, request):
 		posts= Post.objects.all()
-		alldata={'posts': posts ,}
-		return render(request, 'blog/home.html', {'alldata':alldata})
+		return render(request, 'blog/home.html', {'alldata':posts})
 
 class NewPost(TemplateView):
 	def get(self,request):
@@ -20,7 +19,7 @@ class NewPost(TemplateView):
 		bg=NewpostForm(request.POST)
 		if bg.is_valid():
 			bg.save()
-			redirect('/blog')
+			return redirect('/blog')
 
 		else:
 			title= bg.cleaned_data['title']
