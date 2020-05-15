@@ -1,14 +1,16 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   <title>Post</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
-  <link rel="stylesheet" type="text/css" href="/static/newpost/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.min.css' %}">
 <!--===============================================================================================-->
-  <link rel="stylesheet" type="text/css" href="/static/newpost/css/util.css">
-  <link rel="stylesheet" type="text/css" href="/static/newpost/css/main.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 <!--===============================================================================================-->
 
 </head>
@@ -27,11 +29,18 @@
             <a href="/signup">Signup</a>
           {% endif %}
         </div>
-    </div>
+  </div>
   <div class="limiter">
-    <div class="container-login100" style="background-image: url('/static/newpost/images/bg-02.jpg');">
+    <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
     <div class="wrap-contact100">
-      {{post.rr() | safe}}    
+      <span class="contact100-form-title">
+          {{post.title }}
+      </span>
+      <div class="wrap-input100" >
+        <div class="">
+          {{post.content}}
+        </div>
+      </div>  
     </div>
   </div>
 
