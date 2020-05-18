@@ -1,11 +1,24 @@
-{% extends "base.html" %}
+{% extends 'blog/base.html' %}
 {% block content %}
+{% load static %}
 <div class="limiter">
-<div class="container-login100" style="background-image: url('/static/newpost/images/bg-02.jpg');">
+<div class="container-login100" style="background-image: url({% static 'images/bg-02.jpg' %});">
 	<div class="wrap-contact101">	
 		<form action="" >
-			{% for p in posts %}
-			    {{ p.render() | safe }}
+			{% for p in alldata %}
+			    <span >
+				  <a href="{% url 'blog:onepost' p.pk %}"
+				    class="contact101-form-title"
+				   style="text-decoration: none">{{p.title}}</a>
+				</span>
+				<span class="label-input101">
+					{{p.datecreated}}
+				</span>
+				<div class="wrap-input100" >
+				  <div >
+				    {{p.content}}
+				  </div>
+				</div>
 			    <br><br>
 			{% endfor %}
 		</form>

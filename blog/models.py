@@ -5,10 +5,13 @@ import datetime
 class Post(models.Model):
 	title= models.TextField()
 	content=models.TextField()
-	#create_date=models.DateTimeField('created')
+	create_date=models.DateTimeField(auto_now_add= True)
 
 	def __str__(self):
 		return self.title
+
+	def datecreated(self):
+		return self.create_date.strftime('%d %b, %Y')
 
 class User(models.Model):
 	username= models.CharField(max_length= 40)

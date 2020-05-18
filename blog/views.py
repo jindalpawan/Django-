@@ -4,11 +4,13 @@ from django.urls import reverse
 from .models import Post , User
 from django.views.generic import TemplateView
 from .forms import NewpostForm
+from django.utils import timezone
+from datetime import datetime
 
 class HomePage(TemplateView):
 	def get(self, request):
-		posts= Post.objects.all()
-		return render(request, 'blog/home.html', {'alldata':posts})
+		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date')
+		return render(request, 'blog/front.html', {'alldata':posts})
 
 
 class Perma(TemplateView):
@@ -34,4 +36,5 @@ class NewPost(TemplateView):
 		else:
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
+			print(bg.errors)
 			return render(request, 'blog/newpost.html',{'title': title, 'content':content})

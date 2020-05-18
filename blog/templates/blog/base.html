@@ -1,21 +1,23 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
-  <link rel="stylesheet" type="text/css" href="/static/newpost/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.min.css' %}">
 <!--===============================================================================================-->
-  <link rel="stylesheet" type="text/css" href="/static/newpost/css/util.css">
-  <link rel="stylesheet" type="text/css" href="/static/newpost/css/main.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
   <title>Blog</title>
 </head>
 <body>
   <div class="header">
     <div class="newp">
-      <a href='/newpost' class="pctive" >New Blog</a>
+      <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
     </div>
     <div class="header-right">
-      <a href='/' class="active" >Home</a>
+      <a href="{% url 'blog:home' %}" class="active" >Home</a>
       {% if user %}
         <a href="/profile" class="margn-rgt margn-lft">{{user.dname}}</a>
         <a href="/logout">Logout</a>

@@ -16,7 +16,7 @@
 <body>
   <div class="header">
         <div class="header-right">
-          <a href='/' >Home</a>
+          <a href="{% url 'blog:home'%}" >Home</a>
           {% if user %}
             <a href="/profile" class="margn-rgt margn-lft" >{{user.dname}}</a>
             <a href="/logout" >Logout</a>

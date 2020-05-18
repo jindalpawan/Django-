@@ -20,7 +20,7 @@
       <a href='/newpost' class="pctive" >New Blog</a>
     </div>
         <div class="header-right">
-          <a href='/' >Home</a>
+          <a href="{% url 'blog:home' %}" >Home</a>
           {% if user %}
             <a href="/profile" class="margn-rgt margn-lft">{{user.dname}}</a>
             <a href="/logout">Logout</a>
@@ -33,6 +33,9 @@
   <div class="limiter">
     <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
     <div class="wrap-contact100">
+      <span class="label-input100">
+      {{post.datecreated}}
+      </span>
       <span class="contact100-form-title">
           {{post.title }}
       </span>
