@@ -1,50 +1,47 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 	<head>
 		<meta charset="utf-8">
 		<title>Profile</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!--===============================================================================================-->
-		  <link rel="stylesheet" type="text/css" href="/static/newpost/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+		  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.css' %}">
+		  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.min.css' %}">
 		<!--===============================================================================================-->
-		  <link rel="stylesheet" type="text/css" href="/static/newpost/css/util.css">
-		  <link rel="stylesheet" type="text/css" href="/static/newpost/css/main.css">
+		  <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
+		  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 		<!--===============================================================================================-->
 
 	</head>
 
 	<body>
 		<div class="header">
-		     <a href='/newpost' class="pctive" >New Blog</a>
+		     <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
 		    <div class="header-right">
-		      <a href='/' >Home</a>
+		      <a href= "{% url 'blog:home' %}">Home</a>
 		      {% if user %}
-		        <a class="margn-rgt margn-lft" href="/profile">Profile</a>
-		        <a href="/logout">Logout</a>
+		        <a class="margn-rgt margn-lft" href="{% url 'blog:editprofile' %}">Edit Profile</a>
+		        <a href="{% url 'blog:signup' %}">Logout</a>
 		      {% else %}
-		        <a href="/login" class="margn-rgt margn-lft">Login</a>
-		        <a href="/signup">Signup</a>
+		        <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
+		        <a href="{% url 'blog:signup' %}">Signup</a>
 		      {% endif %}
 		    </div>
 		</div>
 
 		<div class="limiter">
-			<div class="container-login100" style="background-image: url('/static/newpost/images/bg-01.jpg');">
+			<div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
 			<div class="wrap-contact100">
-				<form action="" class="contact100-form">
+				<form class="contact100-form">
 					<h1><b>
-						{{user.dname}}
+						{{user.name}}
 					</b></h1>
 					<br>
 					<h4>Genral Details-</h4>
 					<h4>
-						Username: {{user.name}}
-					</h4>					
-					{% if user.contact %}
-						<h4>
-							Contact: {{user.contact}}
-						</h4>
-					{% endif %}
+						Username: {{user.username}}
+					</h4>
 					{% if user.email %}
 					<h4>
 						Email: {{user.email}}

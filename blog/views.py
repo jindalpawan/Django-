@@ -7,6 +7,14 @@ from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm
 from django.utils import timezone
 from datetime import datetime
 
+
+
+class Logout():
+	def logout(self):
+		response=render(request,"blog/signup.html",)
+		response.set_cookie('user_id', "")
+		return response
+
 	
 class Signup(TemplateView):
 	def get(self,request):
@@ -63,10 +71,11 @@ class Login(TemplateView):
 		if log.is_valid():
 			username= log.cleaned_data['username']
 			password=log.cleaned_data['password']
-			obj=User.objects.get(username=username)
-			print(obj)
+			obj=User.objects.filter(username=username).first()
 			if obj.password==password:
-				return redirect(reverse('blog:home',))				
+				response=redirect(reverse('blog:home',))
+				response.set_cookie('user_id',obj.id)
+				return response				
 			else:
 				dic={'username':username, 'password':password,'error_password':"Username or Password not matcheds"}
 				return render(request,"blog/login.html",dic)
@@ -75,7 +84,15 @@ class Login(TemplateView):
 class EditProfile(TemplateView):
 	def get(self,request):
 		sig=EditProfileForm(request.GET)
-		return render(request,"blog/edit_profile.html",)
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		dic={}
+		if userid:
+			user=User.objects.filter(id=userid).first()
+			dic['username']=user.username
+			dic['email']=user.email
+			dic['name']=user.name
+		return render(request,"blog/edit_profile.html",dic)
 
 	def post(self, request):
 		sig=EditProfileForm(request.POST)
@@ -113,26 +130,45 @@ class EditProfile(TemplateView):
 			dic={'username': username, 'name':name, 'email':email}
 			return render(request,'blog/edit_profile.html',dic)	
 
-
+class Profile(TemplateView):
+	def get(self,request):
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		if userid:
+			user=User.objects.filter(id=userid).first()
+		return render(request, "blog/profile.html",{'user':user})
 
 
 class HomePage(TemplateView):
 	def get(self, request):
-		print(request.COOKIES.get('user_id',0))
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		if userid:
+			user=User.objects.filter(id=userid).first()
 		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date')
-		return render(request, 'blog/front.html', {'alldata':posts})
+		return render(request, 'blog/front.html', {'alldata':posts,'user':user})
 
 
 class Perma(TemplateView):
 	def get(self,request, pk):
-		obj= get_object_or_404(Post, pk=pk)
-		return render(request, "blog/perma.html",{'post':obj})
+		obj= Post.objects.filter(pk=pk).first()
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		if userid:
+			user=User.objects.filter(id=userid).first()
+		return render(request, "blog/perma.html",{'post':obj,'user':user})
 		
 
 class NewPost(TemplateView):
 	def get(self,request):
 		bg=NewpostForm(request.GET)
-		return render(request,"blog/newpost.html",)
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		if userid:
+			user=User.objects.filter(id=userid).first()
+			return render(request,"blog/newpost.html",{'user':user})
+		else:
+			return render(request,"blog/signup.html",)
 
 	def post(self, request):
 		bg=NewpostForm(request.POST)
@@ -146,5 +182,4 @@ class NewPost(TemplateView):
 		else:
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
-			print(bg.errors)
 			return render(request, 'blog/newpost.html',{'title': title, 'content':content})
