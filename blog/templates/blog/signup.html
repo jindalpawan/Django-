@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <title>Blogging</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="/static/login/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/bootstrap.min.css' %}">
 <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="/static/login/css/util.css">
-    <link rel="stylesheet" type="text/css" href="/static/login/css/main.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/mainl.css'  %}">
 <!--===============================================================================================-->
 
 </head>
 <body>
     
     <div class="limiter">
-        <div class="container-login100" style="background-image: url('/static/login/images/bg-01.jpg');">
+        <div class="container-login100" style="background-image: url({% static 'images/bg-02.jpg' %});">
             <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
                 <form class="login100-form validate-form flex-sb flex-w" method="post">
+                    {% csrf_token %}
                     <span class="login100-form-title p-b-53">
                         Sign Up With
                     </span>
@@ -33,11 +35,11 @@
                         </span>
                     </div>
                     <div class="wrap-input100">
-                        <input class="input100" type="text" name="name" value="{{name}}">
+                        <input class="input100" type="text" name="username" value="{{username}}">
                         <span class="focus-input100"></span>
                     </div>
                     <div class="error">
-                            {{error_name}}
+                            {{error_username}}
                     </div>
                     <div class="p-t-10 p-b-5 wid">
                         <span class="txt1">
@@ -45,25 +47,8 @@
                         </span>
                     </div>
                     <div class="wrap-input100 ">
-                        <input class="input100" type="text" name="dname" value="{{dname}}">
+                        <input class="input100" type="text" name="name" value="{{name}}">
                         <span class="focus-input100"></span>
-                    </div>
-
-                    <div  class="error">
-                        {{error_dname}}
-                    </div>
-
-                    <div class="p-t-10 p-b-5 wid">
-                        <span class="txt1">
-                            Contact
-                        </span>
-                    </div>
-                    <div class="wrap-input100 ">
-                        <input class="input100" type="text" name="contact" value="{{contact}}">
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div  class="error">
-                        {{error_contact}}
                     </div>
 
                     <div class="p-t-10 p-b-5 wid">
@@ -100,11 +85,11 @@
                     </div>
 
                     <div class="wrap-input100">
-                        <input class="input100" type="password" name="verify" value="">
+                        <input class="input100" type="password" name="vpass" value="">
                         <span class="focus-input100"></span>
                     </div>
                     <div class="error">
-                        {{error_verify}}
+                        {{error_vpass}}
                         {{error}}
                     </div>
 

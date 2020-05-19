@@ -16,8 +16,7 @@ class Post(models.Model):
 class User(models.Model):
 	username= models.CharField(max_length= 40)
 	name= models.CharField(max_length= 40)
-	contact= models.CharField(max_length=10)
 	email= models.EmailField(max_length= 40)
-
+	password=models.CharField(max_length= 70)
 	def __str__(self):
 		return self.username
