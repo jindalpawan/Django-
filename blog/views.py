@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from .models import Post , User
 from django.views.generic import TemplateView
-from .forms import NewpostForm, SignupForm, LoginForm
+from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm
 from django.utils import timezone
 from datetime import datetime
 
@@ -24,9 +24,9 @@ class Signup(TemplateView):
 			dic={}
 			if password != vpass:
 				dic['error_vpass']="Password not matched"
-			if (User.objects.filter(username=username)):
+			if (User.objects.get(username=username)):
 				dic['error_username']="This username already exist"
-			if (User.objects.filter(email=email)):
+			if (User.objects.get(email=email)):
 				dic['error_email']="This email already exist"
 
 			if dic:
@@ -62,13 +62,57 @@ class Login(TemplateView):
 		if log.is_valid():
 			username= log.cleaned_data['username']
 			password=log.cleaned_data['password']
-			obj=User.objects.filter(username=username)
+			obj=User.objects.get(username=username)
 			print(obj)
 			if obj.password==password:
 				return redirect(reverse('blog:home',))				
 			else:
 				dic={'username':username, 'password':password,'error_password':"Username or Password not matcheds"}
 				return render(request,"blog/login.html",dic)
+
+
+class EditProfile(TemplateView):
+	def get(self,request):
+		sig=EditProfileForm(request.GET)
+		return render(request,"blog/edit_profile.html",)
+
+	def post(self, request):
+		sig=EditProfileForm(request.POST)
+		if sig.is_valid():
+			username=sig.cleaned_data['username']
+			name=sig.cleaned_data['name']
+			email=sig.cleaned_data['email']
+			password=sig.cleaned_data['password']
+			vpass=sig.cleaned_data['vpass']
+			dic={}
+			if password != vpass:
+				dic['error_vpass']="Password not matched"
+			
+			if dic:
+				dic['username']=username
+				dic['name']=name
+				dic['email']=email
+				return render(request,'blog/edit_profile.html',dic)
+			else:
+				p=User.objects.get(username=username)
+				p.name= name
+				p.email=email
+				p.password=password
+				p.save()
+				return redirect(reverse('blog:home',))
+
+		else:
+			username= sig.cleaned_data['username']
+			name=sig.cleaned_data['name']
+			email=sig.cleaned_data['email']
+			password=sig.cleaned_data['password']
+			vpass=sig.cleaned_data['vpass']
+			print(vpass)
+			print(sig.errors)
+			dic={'username': username, 'name':name, 'email':email}
+			return render(request,'blog/edit_profile.html',dic)	
+
+
 
 
 class HomePage(TemplateView):

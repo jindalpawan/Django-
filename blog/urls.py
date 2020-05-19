@@ -8,5 +8,6 @@ urlpatterns = [
     path('newpost/', views.NewPost.as_view(), name='newpost'),
     path('signup/', views.Signup.as_view(), name='signup'),
     path('login/', views.Login.as_view(), name='login'),
+    path('editprofile/', views.EditProfile.as_view(), name='editprofile'),
     #path('', views.perma, name='perma'),
 ]
