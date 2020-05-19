@@ -14,7 +14,21 @@
 
 </head>
 <body>
-    
+    <div class="header">
+    <div class="newp">
+      <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
+    </div>
+    <div class="header-right">
+      <a href="{% url 'blog:home' %}" class="active" >Home</a>
+      {% if user %}
+        <a href="/profile" class="margn-rgt margn-lft">{{user.dname}}</a>
+        <a href="/logout">Logout</a>
+      {% else %}
+        <a href="/login" class="margn-rgt margn-lft">Login</a>
+        <a href="/signup">Signup</a>
+      {% endif %}
+    </div>
+  </div>
     <div class="limiter">
         <div class="container-login100" style="background-image: url({% static 'images/bg-02.jpg' %});">
             <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
