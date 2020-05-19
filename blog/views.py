@@ -7,11 +7,13 @@ from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm
 from django.utils import timezone
 from datetime import datetime
 
-
+	
 class Signup(TemplateView):
 	def get(self,request):
 		sig=SignupForm(request.GET)
-		return render(request,"blog/signup.html",)
+		response=render(request,"blog/signup.html",)
+		response.set_cookie('user_id', "")
+		return response
 
 	def post(self, request):
 		sig=SignupForm(request.POST)
@@ -24,9 +26,9 @@ class Signup(TemplateView):
 			dic={}
 			if password != vpass:
 				dic['error_vpass']="Password not matched"
-			if (User.objects.get(username=username)):
+			if (User.objects.filter(username=username).first()):
 				dic['error_username']="This username already exist"
-			if (User.objects.get(email=email)):
+			if (User.objects.filter(email=email).first()):
 				dic['error_email']="This email already exist"
 
 			if dic:
@@ -37,16 +39,15 @@ class Signup(TemplateView):
 			else:
 				p=User(username=username, name=name, email= email, password=password)
 				p.save()
-				return redirect(reverse('blog:home',))
-
+				response=redirect(reverse('blog:home',))
+				response.set_cookie('user_id',p.id)
+				return response
 		else:
 			username= sig.cleaned_data['username']
 			name=sig.cleaned_data['name']
 			email=sig.cleaned_data['email']
 			password=sig.cleaned_data['password']
 			vpass=sig.cleaned_data['vpass']
-			print(vpass)
-			print(sig.errors)
 			dic={'username': username, 'name':name, 'email':email}
 			return render(request,'blog/signup.html',dic)	
 
@@ -117,6 +118,7 @@ class EditProfile(TemplateView):
 
 class HomePage(TemplateView):
 	def get(self, request):
+		print(request.COOKIES.get('user_id',0))
 		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date')
 		return render(request, 'blog/front.html', {'alldata':posts})
 
