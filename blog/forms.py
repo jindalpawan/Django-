@@ -19,3 +19,11 @@ class SignupForm(forms.ModelForm):
 	class Meta:
 		model=User
 		fields=['username', 'name', 'email', 'password']
+
+
+class LoginForm(forms.ModelForm):
+	username= forms.CharField(max_length= 40)
+	password=forms.CharField(widget=forms.PasswordInput)
+	class Meta:
+		model=User
+		fields=['username', 'password']

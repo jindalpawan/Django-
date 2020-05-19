@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from .models import Post , User
 from django.views.generic import TemplateView
-from .forms import NewpostForm, SignupForm
+from .forms import NewpostForm, SignupForm, LoginForm
 from django.utils import timezone
 from datetime import datetime
 
@@ -21,12 +21,23 @@ class Signup(TemplateView):
 			email=sig.cleaned_data['email']
 			password=sig.cleaned_data['password']
 			vpass=sig.cleaned_data['vpass']
-			exist1=get_object_or_404(User, username=username)
-			exist2=get_object_or_404(User, email=email)
+			dic={}
+			if password != vpass:
+				dic['error_vpass']="Password not matched"
+			if (User.objects.filter(username=username)):
+				dic['error_username']="This username already exist"
+			if (User.objects.filter(email=email)):
+				dic['error_email']="This email already exist"
 
-			p=User(username=username, name=name, email= email, password=password)
-			p.save()
-			return redirect(reverse('blog:home',))
+			if dic:
+				dic['username']=username
+				dic['name']=name
+				dic['email']=email
+				return render(request,'blog/signup.html',dic)
+			else:
+				p=User(username=username, name=name, email= email, password=password)
+				p.save()
+				return redirect(reverse('blog:home',))
 
 		else:
 			username= sig.cleaned_data['username']
@@ -36,8 +47,28 @@ class Signup(TemplateView):
 			vpass=sig.cleaned_data['vpass']
 			print(vpass)
 			print(sig.errors)
-			return render(request,'blog/signup.html',{'username': username, 'name':name, 'email':email})	
+			dic={'username': username, 'name':name, 'email':email}
+			return render(request,'blog/signup.html',dic)	
 
+
+
+class Login(TemplateView):
+	def get(self, request):
+		log=LoginForm(request.GET)
+		return render(request,"blog/login.html",)
+
+	def post(self, request):
+		log=LoginForm(request.POST)
+		if log.is_valid():
+			username= log.cleaned_data['username']
+			password=log.cleaned_data['password']
+			obj=User.objects.filter(username=username)
+			print(obj)
+			if obj.password==password:
+				return redirect(reverse('blog:home',))				
+			else:
+				dic={'username':username, 'password':password,'error_password':"Username or Password not matcheds"}
+				return render(request,"blog/login.html",dic)
 
 
 class HomePage(TemplateView):
