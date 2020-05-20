@@ -10,11 +10,29 @@ import urllib3
 import json
 
 
-class Logout():
-	def logout(self):
-		response=render(request,"blog/signup.html",)
-		response.set_cookie('user_id', "")
-		return response
+def make_secure_val(val):
+    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+
+def check_secure_val(secure_val):
+    val = secure_val.split('|')[0]
+    if secure_val == make_secure_val(val):
+        return val
+
+def make_salt(length = 5):
+    return ''.join(random.choice(letters) for x in xrange(length))
+
+def make_pw_hash(name, pw, salt = None):
+    if not salt:
+        salt = make_salt()
+    h = hashlib.sha256(name + pw + salt).hexdigest()
+    return '%s,%s' % (salt, h)
+
+def valid_pw(name, password, h):
+    salt = h.split(',')[0]
+    return h == make_pw_hash(name, password, salt)
+
+def users_key(group = 'default'):
+    return db.Key.from_path('users', group)
 
 	
 class Signup(TemplateView):
@@ -108,7 +126,6 @@ class EditProfile(TemplateView):
 			return redirect(reverse('blog:home',))
 		
 		else:
-			print(sig.errors)
 			username=sig.cleaned_data['username']
 			name=sig.cleaned_data['name']
 			email=sig.cleaned_data['email']
@@ -121,8 +138,9 @@ class Profile(TemplateView):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
 		if userid:
+			posts=Post.objects.filter(user=userid)
 			user=User.objects.filter(id=userid).first()
-		return render(request, "blog/profile.html",{'user':user})
+		return render(request, "blog/profile.html",{'user':user,'posts':posts})
 
 
 class HomePage(TemplateView):
@@ -131,7 +149,7 @@ class HomePage(TemplateView):
 		user=""
 		if userid:
 			user=User.objects.filter(id=userid).first()
-		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date')
+		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date').reverse()
 		return render(request, 'blog/front.html', {'alldata':posts,'user':user})
 
 
@@ -159,10 +177,12 @@ class NewPost(TemplateView):
 	def post(self, request):
 		bg=NewpostForm(request.POST)
 		if bg.is_valid():
+			userid=request.COOKIES.get('user_id',0)
+			user=User.objects.filter(id=userid).first()
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
 			content=content.replace('\n', '<br>')
-			p=Post(title= title, content=content)
+			p=Post(title= title, content=content,user= user)
 			p.save()
 			return redirect(reverse('blog:onepost',args=(p.pk,)))
 

@@ -33,9 +33,13 @@
   <div class="limiter">
     <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
     <div class="wrap-contact100">
+      <span >
+      {{post.user.name}}
+      </span>
       <span class="label-input100">
       {{post.datecreated}}
       </span>
+      <br>
       <span class="contact100-form-title">
           {{post.title | safe }}
       </span>

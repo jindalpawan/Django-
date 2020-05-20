@@ -47,7 +47,29 @@
 						Email: {{user.email}}
 					</h4>
 					{% endif %}
+					<br>
+					<span class="contact101-form-title">Posts:
+					</span>
+					<br>
+					{% for p in posts %}
+					    <span >
+							<a href="{% url 'blog:onepost' p.pk %}"
+							    class="contact101-form-title"
+							    style="text-decoration: none">{{p.title | safe}}
+							</a>
+						</span>
+						<span class="label-input101">
+							{{p.datecreated}}
+						</span>
+						<div class="wrap-input100" >
+						  <div >
+						    {{p.Contents | safe}}
+						  </div>
+						</div>
+						<br>
+					{% endfor %}
 				</form>
+
 			</div>
 		</div>
 		</div>
