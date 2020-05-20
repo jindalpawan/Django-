@@ -8,31 +8,24 @@ from django.utils import timezone
 from datetime import datetime
 import urllib3
 import json
+import random
+import hashlib
+import hmac
 
-
-def make_secure_val(val):
-    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
-
-def check_secure_val(secure_val):
-    val = secure_val.split('|')[0]
-    if secure_val == make_secure_val(val):
-        return val
+str="asdfghjklpoiuytrewqzxcvbnm"
 
 def make_salt(length = 5):
-    return ''.join(random.choice(letters) for x in xrange(length))
+    return ''.join(random.choice(str) for x in range(length))
+
 
 def make_pw_hash(name, pw, salt = None):
-    if not salt:
-        salt = make_salt()
-    h = hashlib.sha256(name + pw + salt).hexdigest()
-    return '%s,%s' % (salt, h)
+	if not salt:
+		salt = make_salt()
+	h = (hashlib.sha256((name + pw + salt).encode()).hexdigest())
+	return '%s,%s' % (salt, h)
 
 def valid_pw(name, password, h):
-    salt = h.split(',')[0]
     return h == make_pw_hash(name, password, salt)
-
-def users_key(group = 'default'):
-    return db.Key.from_path('users', group)
 
 	
 class Signup(TemplateView):
@@ -64,6 +57,7 @@ class Signup(TemplateView):
 				dic['email']=email
 				return render(request,'blog/signup.html',dic)
 			else:
+				password=make_pw_hash(username, password)
 				p=User(username=username, name=name, email= email, password=password)
 				p.save()
 				response=redirect(reverse('blog:home',))
@@ -91,7 +85,7 @@ class Login(TemplateView):
 			username= log.cleaned_data['username']
 			password=log.cleaned_data['password']
 			obj=User.objects.filter(username=username).first()
-			if obj.password==password:
+			if obj and valid_pw(username, password, obj.password):
 				response=redirect(reverse('blog:home',))
 				response.set_cookie('user_id',obj.id)
 				return response				
