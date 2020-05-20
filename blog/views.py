@@ -6,7 +6,8 @@ from django.views.generic import TemplateView
 from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm
 from django.utils import timezone
 from datetime import datetime
-
+import urllib3
+import json
 
 
 class Logout():
@@ -100,35 +101,20 @@ class EditProfile(TemplateView):
 			username=sig.cleaned_data['username']
 			name=sig.cleaned_data['name']
 			email=sig.cleaned_data['email']
-			password=sig.cleaned_data['password']
-			vpass=sig.cleaned_data['vpass']
-			dic={}
-			if password != vpass:
-				dic['error_vpass']="Password not matched"
-			
-			if dic:
-				dic['username']=username
-				dic['name']=name
-				dic['email']=email
-				return render(request,'blog/edit_profile.html',dic)
-			else:
-				p=User.objects.get(username=username)
-				p.name= name
-				p.email=email
-				p.password=password
-				p.save()
-				return redirect(reverse('blog:home',))
-
+			p=User.objects.filter(username=username).first()
+			p.name= name
+			p.email=email
+			p.save()
+			return redirect(reverse('blog:home',))
+		
 		else:
-			username= sig.cleaned_data['username']
+			print(sig.errors)
+			username=sig.cleaned_data['username']
 			name=sig.cleaned_data['name']
 			email=sig.cleaned_data['email']
-			password=sig.cleaned_data['password']
-			vpass=sig.cleaned_data['vpass']
-			print(vpass)
-			print(sig.errors)
 			dic={'username': username, 'name':name, 'email':email}
 			return render(request,'blog/edit_profile.html',dic)	
+
 
 class Profile(TemplateView):
 	def get(self,request):
@@ -175,6 +161,7 @@ class NewPost(TemplateView):
 		if bg.is_valid():
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
+			content=content.replace('\n', '<br>')
 			p=Post(title= title, content=content)
 			p.save()
 			return redirect(reverse('blog:onepost',args=(p.pk,)))
@@ -183,3 +170,32 @@ class NewPost(TemplateView):
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
 			return render(request, 'blog/newpost.html',{'title': title, 'content':content})
+
+
+class FacebookData(TemplateView):
+	def get(self, request):
+		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
+		URL2="https://graph.facebook.com/me?access_token="
+		code=request.GET['code']
+		code=URL+str(code)
+		lib = urllib3.PoolManager()
+		r = lib.request('GET', code)
+		data=json.loads(r.data.decode('utf-8'))
+		token= data["access_token"]
+		URL2= URL2+str(token)+"&fields=id,name"
+		rr= lib.request('GET', URL2)
+		data2= json.loads(rr.data.decode('utf-8'))
+		username= str(data2['id'])
+		name=str(data2['name'])
+		password=username
+		obj= User.objects.filter(username=username).first()
+		if obj:
+			response=redirect(reverse('blog:home',))
+			response.set_cookie('user_id',obj.id)
+			return response
+		else:
+			obj= User(username=username, name=name, email="", password=password)
+			obj.save()
+			response=redirect(reverse('blog:home',))
+			response.set_cookie('user_id',obj.id)
+			return response

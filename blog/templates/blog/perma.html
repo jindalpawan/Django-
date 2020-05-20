@@ -22,7 +22,7 @@
         <div class="header-right">
           <a href="{% url 'blog:home' %}" >Home</a>
           {% if user %}
-            <a href="{% url 'blog:profile' %}" class="margn-rgt margn-lft">{{user.dname}}</a>
+            <a href="{% url 'blog:profile' %}" class="margn-rgt margn-lft">{{user.name}}</a>
             <a href="{% url 'blog:signup' %}">Logout</a>
           {% else %}
             <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
@@ -37,11 +37,11 @@
       {{post.datecreated}}
       </span>
       <span class="contact100-form-title">
-          {{post.title }}
+          {{post.title | safe }}
       </span>
       <div class="wrap-input100" >
         <div class="">
-          {{post.content}}
+          {{post.content | safe }}
         </div>
       </div>  
     </div>
