@@ -7,11 +7,7 @@ class NewpostForm(forms.ModelForm):
 		fields=['title', 'content']
 
 class SignupForm(forms.ModelForm):
-	username= forms.CharField(max_length= 40)
-	name= forms.CharField(max_length= 40)
-	email= forms.EmailField(max_length= 40)
-	password=forms.CharField(widget=forms.PasswordInput)
-	vpass=forms.CharField(widget=forms.PasswordInput)
+	vpass=forms.CharField(max_length=70)
 	class Meta:
 		model=User
 		fields=['username', 'name', 'email', 'password']
@@ -27,3 +23,11 @@ class EditProfileForm(forms.ModelForm):
 	class Meta:
 		model=User
 		fields=['username', 'name', 'email']
+
+
+class EditPasswordForm(forms.ModelForm):
+	vpass=forms.CharField(max_length=70)
+	newpass=forms.CharField(max_length=70)
+	class Meta:
+		model=User
+		fields=['password']

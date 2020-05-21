@@ -2,7 +2,7 @@
 <html lang="en">
 {% load static %}
 <head>
-    <title>Signup</title>
+    <title>Profile</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
@@ -14,93 +14,76 @@
 
 </head>
 <body>
+    <div class="header">
+        <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
+            <div class="header-right">
+              <a href= "{% url 'blog:home' %}">Home</a>
+              {% if user %}
+                <a class="margn-rgt margn-lft" href="{% url 'blog:profile' %}">Profile</a>
+                <a href="{% url 'blog:signup' %}">Logout</a>
+              {% else %}
+                <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
+                <a href="{% url 'blog:signup' %}">Signup</a>
+              {% endif %}
+            </div>
+        </div>
     <div class="limiter">
         <div class="container-login100" style="background-image: url({% static 'images/bg-02.jpg' %});">
             <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
                 <form class="login100-form validate-form flex-sb flex-w" method="post">
                     {% csrf_token %}
                     <span class="login100-form-title p-b-53">
-                        Sign Up With
+                        Edit Password
                     </span>
                     
-                    <a href='https://www.facebook.com/v6.0/dialog/oauth?client_id=&redirect_uri=http://localhost:8000/blog/dataa&' 
-                    class="btn-face m-t-15 m-b-15 fb-login-button">
-                        <i class="fa fa-facebook-official"></i>
-                        Signup with Facebook
-                    </a>
                     <div class="p-t-10 p-b-5 wid">
                         <span class="txt1">
-                            Username
+                            Current Password
                         </span>
                     </div>
                     <div class="wrap-input100">
-                        <input class="input100" type="text" name="username" required value="{{username}}">
+                        <input class="input100" type="password" name="password" required>
                         <span class="focus-input100"></span>
                     </div>
-                    <div class="error">
-                            {{error_username}}
+                    <div  class="error">
+                        {{error_password}}
                     </div>
                     <div class="p-t-10 p-b-5 wid">
                         <span class="txt1">
-                            Name
+                            New Password
                         </span>
                     </div>
                     <div class="wrap-input100 ">
-                        <input class="input100" type="text" name="name" required value="{{name}}">
+                        <input class="input100" type="password" name="newpass" required >
                         <span class="focus-input100"></span>
                     </div>
 
                     <div class="p-t-10 p-b-5 wid">
                         <div class="txt1">
-                            Email
+                            Verify Password
                         </div>
                     </div>
                     <div class="wrap-input100">
-                        <input class="input100" type="text" name="email" required value="{{email}}">
+                        <input class="input100" type="password" name="vpass" required >
                         <span class="focus-input100"></span>
                     </div>
                     <div  class="error">
-                        {{error_email}}
+                        {{error_vpass}}
                     </div>
                     
-                    <div class="p-t-10 p-b-5 wid">
-                        <span class="txt1">
-                            Password
-                        </span>
-                    </div>
-
-                    <div class="wrap-input100 ">
-                        <input class="input100" type="password" name="password" required value="">
-                        <span class="focus-input100"></span>
-                    </div>
-
-                    <div class="p-t-13 p-b-5">
-                        <span class="txt1">
-                            Verify Password
-                        </span>
-                    </div>
-
-                    <div class="wrap-input100">
-                        <input class="input100" type="password" name="vpass" required value="">
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="error">
-                        {{error_password}}
-                    </div>
                     <br>
                     <div class="container-login100-form-btn m-t-17">
                         <button class="login100-form-btn" type="submit">
-                            Sign Up
+                            Submit
                         </button>
                     </div>
-
                     <div class="w-full text-center p-t-55">
                         <span class="txt2">
-                            Already member?
+                            Want to Edit Profile...
                         </span>
 
-                        <a href="{% url 'blog:login' %}" class="txt2 bo1">
-                            Login now
+                        <a href="{% url 'blog:editprofile' %}" class="txt2 bo1">
+                            Click here!!!
                         </a>
                     </div>
                 </form>

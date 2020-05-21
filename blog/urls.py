@@ -9,6 +9,7 @@ urlpatterns = [
     path('signup/', views.Signup.as_view(), name='signup'),
     path('login/', views.Login.as_view(), name='login'),
     path('editprofile/', views.EditProfile.as_view(), name='editprofile'),
+    path('editpass/', views.EditPassword.as_view(), name='editpass'),
     path('profile/', views.Profile.as_view(), name='profile'),
     path('dataa', views.FacebookData.as_view(), name='facebookdata'),
     #path('', views.perma, name='perma'),

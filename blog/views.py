@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from .models import Post , User
 from django.views.generic import TemplateView
-from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm
+from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm, EditPasswordForm
 from django.utils import timezone
 from datetime import datetime
 import urllib3
@@ -35,7 +35,10 @@ def make_secure_value(value):
 
 def check_secure_value(h):
 	val = h.split('|')[0]
-	return int(val) and h == make_secure_value(val)
+	if h == make_secure_value(val):
+		return int(val)
+	else:
+		return 0
 
 
 
@@ -44,6 +47,7 @@ class HomePage(TemplateView):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
 		userid= check_secure_value(userid)
+		print(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
 		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date').reverse()
@@ -58,7 +62,9 @@ class Perma(TemplateView):
 		userid= check_secure_value(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
-		return render(request, "blog/perma.html",{'post':obj,'user':user})
+			return render(request, "blog/perma.html",{'post':obj,'user':user})
+		else:
+			return redirect(reverse('blog:signup',))
 		
 
 class NewPost(TemplateView):
@@ -71,12 +77,13 @@ class NewPost(TemplateView):
 			user=User.objects.filter(id=userid).first()
 			return render(request,"blog/newpost.html",{'user':user})
 		else:
-			return render(request,"blog/signup.html",)
+			return redirect(reverse('blog:signup',))
 
 	def post(self, request):
 		bg=NewpostForm(request.POST)
 		if bg.is_valid():
 			userid=request.COOKIES.get('user_id',0)
+			userid= check_secure_value(userid)
 			user=User.objects.filter(id=userid).first()
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
@@ -99,8 +106,9 @@ class Profile(TemplateView):
 		if userid:
 			posts=Post.objects.filter(user=userid)
 			user=User.objects.filter(id=userid).first()
-		return render(request, "blog/profile.html",{'user':user,'posts':posts})
-
+			return render(request, "blog/profile.html",{'user':user,'posts':posts})
+		else:
+			return redirect(reverse('blog:signup',))
 
 class EditProfile(TemplateView):
 	def get(self,request):
@@ -114,7 +122,9 @@ class EditProfile(TemplateView):
 			dic['username']=user.username
 			dic['email']=user.email
 			dic['name']=user.name
-		return render(request,"blog/edit_profile.html",dic)
+			return render(request,"blog/edit_profile.html",dic)
+		else:
+			return redirect(reverse('blog:signup',))
 
 	def post(self, request):
 		sig=EditProfileForm(request.POST)
@@ -134,6 +144,44 @@ class EditProfile(TemplateView):
 			email=sig.cleaned_data['email']
 			dic={'username': username, 'name':name, 'email':email}
 			return render(request,'blog/edit_profile.html',dic)	
+
+
+class EditPassword(TemplateView):
+	def get(self,request):
+		sig=EditPasswordForm(request.GET)
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		dic={}
+		userid= check_secure_value(userid)
+		if userid:
+			return render(request,"blog/edit_pass.html",)
+		else:
+			return redirect(reverse('blog:signup',))
+
+	def post(self, request):
+		sig=EditPasswordForm(request.POST)
+		if sig.is_valid():
+			userid=request.COOKIES.get('user_id',0)
+			userid= check_secure_value(userid)
+			user=User.objects.filter(id=userid).first()
+			password=sig.cleaned_data['password']
+			newpass=sig.cleaned_data['newpass']
+			vpass=sig.cleaned_data['vpass']
+			dic={}
+			if user.password!=password:
+				dic['error_password']="Wrong Password!!!!!!"
+			if newpass!= vpass:
+				dic['error_vpass']="Password not match!!!!!!"
+			
+			if not dic:
+				user.password=newpass
+				user.save()
+				return redirect(reverse('blog:profile',))
+			else:
+				return render(request,'blog/edit_pass.html',dic)
+			
+		else:
+			return render(request,'blog/edit_pass.html',)	
 
 
 class Login(TemplateView):
@@ -220,15 +268,10 @@ class FacebookData(TemplateView):
 		name= str(data2['name'])
 		password=username
 		obj= User.objects.filter(username=username).first()
-		if obj:
-			response=redirect(reverse('blog:home',))
-			cookie_id=make_secure_value(obj.id)
-			response.set_cookie('user_id',cookie_id)
-			return response
-		else:
+		if not obj:
 			obj= User(username=username, name=name, email="", password=password)
 			obj.save()
-			response=redirect(reverse('blog:home',))
-			cookie_id=make_secure_value(obj.id)
-			response.set_cookie('user_id',cookie_id)
-			return response
+		cookie_id=make_secure_value(obj.id)
+		response=redirect(reverse('blog:home',))
+		response.set_cookie('user_id',cookie_id)
+		return response
