@@ -208,16 +208,16 @@ class FacebookData(TemplateView):
 		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
 		URL2="https://graph.facebook.com/me?access_token="
 		code=request.GET['code']
-		code=URL+(code)
+		code=URL+str(code)
 		lib = urllib3.PoolManager()
 		r = lib.request('GET', code)
 		data=json.loads(r.data.decode('utf-8'))
-		token= data["access_token"]
+		token= str(data["access_token"])
 		URL2= URL2+(token)+"&fields=id,name"
 		rr= lib.request('GET', URL2)
 		data2= json.loads(rr.data.decode('utf-8'))
-		username= (data2['id'])
-		name=(data2['name'])
+		username= str(data2['id'])
+		name= str(data2['name'])
 		password=username
 		obj= User.objects.filter(username=username).first()
 		if obj:
