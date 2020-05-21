@@ -11,10 +11,10 @@ import json
 import random
 import hashlib
 
-str="asdfghjklpoiuytrewqzxcvbnm"
+str1="asdfghjklpoiuytrewqzxcvbnm"
 
 def make_salt(length = 5):
-    return ''.join(random.choice(str) for x in range(length))
+    return ''.join(random.choice(str1) for x in range(length))
 
 def make_pw_hash(name, pw, salt = None):
 	if not salt:
@@ -26,10 +26,24 @@ def valid_pw(name, password, h):
 	salt = h.split(',')[0]
 	return h == make_pw_hash(name, password, salt)
 
+salt="asdfgh"
+
+def make_secure_value(value):
+	val=str(value)
+	h = (hashlib.sha256((val+ salt).encode()).hexdigest())
+	return '%s|%s' % (val,h)
+
+def check_secure_value(h):
+	val = h.split('|')[0]
+	return int(val) and h == make_secure_value(val)
+
+
+
 class HomePage(TemplateView):
 	def get(self, request):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
+		userid= check_secure_value(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
 		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date').reverse()
@@ -41,6 +55,7 @@ class Perma(TemplateView):
 		obj= Post.objects.filter(pk=pk).first()
 		userid=request.COOKIES.get('user_id',0)
 		user=""
+		userid= check_secure_value(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
 		return render(request, "blog/perma.html",{'post':obj,'user':user})
@@ -51,6 +66,7 @@ class NewPost(TemplateView):
 		bg=NewpostForm(request.GET)
 		userid=request.COOKIES.get('user_id',0)
 		user=""
+		userid= check_secure_value(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
 			return render(request,"blog/newpost.html",{'user':user})
@@ -79,6 +95,7 @@ class Profile(TemplateView):
 	def get(self,request):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
+		userid= check_secure_value(userid)
 		if userid:
 			posts=Post.objects.filter(user=userid)
 			user=User.objects.filter(id=userid).first()
@@ -91,6 +108,7 @@ class EditProfile(TemplateView):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
 		dic={}
+		userid= check_secure_value(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
 			dic['username']=user.username
@@ -118,33 +136,25 @@ class EditProfile(TemplateView):
 			return render(request,'blog/edit_profile.html',dic)	
 
 
-class FacebookData(TemplateView):
+class Login(TemplateView):
 	def get(self, request):
-		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
-		URL2="https://graph.facebook.com/me?access_token="
-		code=request.GET['code']
-		code=URL+(code)
-		lib = urllib3.PoolManager()
-		r = lib.request('GET', code)
-		data=json.loads(r.data.decode('utf-8'))
-		token= data["access_token"]
-		URL2= URL2+(token)+"&fields=id,name"
-		rr= lib.request('GET', URL2)
-		data2= json.loads(rr.data.decode('utf-8'))
-		username= (data2['id'])
-		name=(data2['name'])
-		password=username
-		obj= User.objects.filter(username=username).first()
-		if obj:
-			response=redirect(reverse('blog:home',))
-			response.set_cookie('user_id',obj.id)
-			return response
-		else:
-			obj= User(username=username, name=name, email="", password=password)
-			obj.save()
-			response=redirect(reverse('blog:home',))
-			response.set_cookie('user_id',obj.id)
-			return response
+		log=LoginForm(request.GET)
+		return render(request,"blog/login.html",)
+
+	def post(self, request):
+		log=LoginForm(request.POST)
+		if log.is_valid():
+			username= log.cleaned_data['username']
+			password=log.cleaned_data['password']
+			obj=User.objects.filter(username=username).first()
+			if obj and valid_pw(username, password, obj.password):
+				response=redirect(reverse('blog:home',))
+				cookie_id=make_secure_value(obj.id)
+				response.set_cookie('user_id',cookie_id)
+				return response				
+			else:
+				dic={'username':username, 'password':password,'error_password':"Username or Password not matcheds"}
+				return render(request,"blog/login.html",dic)
 
 
 class Signup(TemplateView):
@@ -179,8 +189,9 @@ class Signup(TemplateView):
 				password=make_pw_hash(username, password)
 				p=User(username=username, name=name, email= email, password=password)
 				p.save()
+				cookie_id=make_secure_value(p.id) 
 				response=redirect(reverse('blog:home',))
-				response.set_cookie('user_id',p.id)
+				response.set_cookie('user_id',cookie_id)
 				return response
 		else:
 			username= sig.cleaned_data['username']
@@ -192,21 +203,32 @@ class Signup(TemplateView):
 			return render(request,'blog/signup.html',dic)	
 
 
-class Login(TemplateView):
+class FacebookData(TemplateView):
 	def get(self, request):
-		log=LoginForm(request.GET)
-		return render(request,"blog/login.html",)
-
-	def post(self, request):
-		log=LoginForm(request.POST)
-		if log.is_valid():
-			username= log.cleaned_data['username']
-			password=log.cleaned_data['password']
-			obj=User.objects.filter(username=username).first()
-			if obj and valid_pw(username, password, obj.password):
-				response=redirect(reverse('blog:home',))
-				response.set_cookie('user_id',obj.id)
-				return response				
-			else:
-				dic={'username':username, 'password':password,'error_password':"Username or Password not matcheds"}
-				return render(request,"blog/login.html",dic)
+		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
+		URL2="https://graph.facebook.com/me?access_token="
+		code=request.GET['code']
+		code=URL+(code)
+		lib = urllib3.PoolManager()
+		r = lib.request('GET', code)
+		data=json.loads(r.data.decode('utf-8'))
+		token= data["access_token"]
+		URL2= URL2+(token)+"&fields=id,name"
+		rr= lib.request('GET', URL2)
+		data2= json.loads(rr.data.decode('utf-8'))
+		username= (data2['id'])
+		name=(data2['name'])
+		password=username
+		obj= User.objects.filter(username=username).first()
+		if obj:
+			response=redirect(reverse('blog:home',))
+			cookie_id=make_secure_value(obj.id)
+			response.set_cookie('user_id',cookie_id)
+			return response
+		else:
+			obj= User(username=username, name=name, email="", password=password)
+			obj.save()
+			response=redirect(reverse('blog:home',))
+			cookie_id=make_secure_value(obj.id)
+			response.set_cookie('user_id',cookie_id)
+			return response
