@@ -47,7 +47,6 @@ class HomePage(TemplateView):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
 		userid= check_secure_value(userid)
-		print(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
 		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date').reverse()
@@ -132,7 +131,10 @@ class EditProfile(TemplateView):
 			username=sig.cleaned_data['username']
 			name=sig.cleaned_data['name']
 			email=sig.cleaned_data['email']
-			p=User.objects.filter(username=username).first()
+			userid=request.COOKIES.get('user_id',0)
+			userid= check_secure_value(userid)
+			p=User.objects.filter(id=userid).first()
+			p.username=username
 			p.name= name
 			p.email=email
 			p.save()
@@ -207,6 +209,8 @@ class Login(TemplateView):
 
 class Signup(TemplateView):
 	def get(self,request):
+		Post.objects.all().delete()
+		User.objects.all().delete()
 		sig=SignupForm(request.GET)
 		response=render(request,"blog/signup.html",)
 		response.set_cookie('user_id','')
