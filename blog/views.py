@@ -269,7 +269,7 @@ class Signup(TemplateView):
 
 class FacebookData(TemplateView):
 	def get(self, request):
-		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=657925015003816&redirect_uri=http://localhost:8000/blog/dataa&client_secret=7ded865c46b21425850884d1c6994c46&code='
+		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
 		URL2="https://graph.facebook.com/me?access_token="
 		code=request.GET['code']
 		code=URL+str(code)
