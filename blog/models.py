@@ -10,9 +10,8 @@ class User(models.Model):
 	def __str__(self):
 		return self.username
 
-
 class Post(models.Model):
-	user= models.ForeignKey(User, on_delete=models.CASCADE)
+	author= models.ForeignKey(User, on_delete=models.CASCADE)
 	title= models.TextField()
 	content=models.TextField()
 	create_date=models.DateTimeField(auto_now_add= True)
@@ -28,3 +27,10 @@ class Post(models.Model):
 
 	def Contents(self):
 		return self.content[:100]+"..."
+
+
+class Comment(models.Model):
+	user=models.ForeignKey(User, on_delete=models.CASCADE)
+	post=models.ForeignKey(Post, on_delete=models.CASCADE)
+	msg=models.TextField()
+	created_at = models.DateTimeField(auto_now_add=True)

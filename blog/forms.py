@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, User
+from .models import Post, User, Comment
 from datetime import datetime
 class NewpostForm(forms.ModelForm):
 	class Meta:
@@ -31,3 +31,9 @@ class EditPasswordForm(forms.ModelForm):
 	class Meta:
 		model=User
 		fields=['password']
+
+
+class CommentForm(forms.ModelForm):
+	class Meta:
+		model=Comment
+		fields=['msg']

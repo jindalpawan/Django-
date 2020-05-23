@@ -38,23 +38,20 @@
 						{{user.name}}
 					</b></h1>
 					<br>
-					<h4>Genral Details-</h4>
-					<h4>
-						Username: {{user.username}}
-					</h4>
+					<span class="contact100-form-title">Genral Details-</span>
+					<div >
+					  Username: {{user.username}}	
+					</div>
 					{% if user.email %}
-					<h4>
+					<div>
 						Email: {{user.email}}
-					</h4>
+					</div>
 					{% endif %}
-					<br>
-					<span class="contact101-form-title">Posts:
-					</span>
-					<br>
 					{% for p in posts %}
+					    <span class="contact100-form-title">Posts:</span>
 					    <span >
 							<a href="{% url 'blog:onepost' p.pk %}"
-							    class="contact101-form-title"
+							    class="contact100-form-title"
 							    style="text-decoration: none">{{p.title | safe}}
 							</a>
 						</span>

@@ -1,9 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from .models import Post , User
+from .models import Post , User, Comment
 from django.views.generic import TemplateView
-from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm, EditPasswordForm
+from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm, EditPasswordForm, CommentForm
 from django.utils import timezone
 from datetime import datetime
 import urllib3
@@ -59,12 +59,26 @@ class Perma(TemplateView):
 		userid=request.COOKIES.get('user_id',0)
 		user=""
 		userid= check_secure_value(userid)
+		cmnts=Comment.objects.filter(post=obj)
 		if userid:
 			user=User.objects.filter(id=userid).first()
-			return render(request, "blog/perma.html",{'post':obj,'user':user})
+			return render(request, "blog/perma.html",{'post':obj,'user':user,'cmnts':cmnts})
 		else:
-			return redirect(reverse('blog:signup',))
-		
+			return render(request, "blog/perma.html",{'post':obj,'cmnts':cmnts})
+	def post(self, request,pk):
+		bg=CommentForm(request.POST)
+		if bg.is_valid():
+			print(bg.errors)
+			userid=request.COOKIES.get('user_id',0)
+			userid= check_secure_value(userid)
+			user=User.objects.filter(id=userid).first()
+			msg= bg.cleaned_data['msg']
+			l=len(msg)-4
+			msg=msg[:l]
+			obj= Post.objects.filter(pk=pk).first()
+			x=Comment(post=obj,user=user,msg=msg)
+			x.save()
+			return redirect(reverse('blog:onepost',args=[pk,]))
 
 class NewPost(TemplateView):
 	def get(self,request):
@@ -83,11 +97,11 @@ class NewPost(TemplateView):
 		if bg.is_valid():
 			userid=request.COOKIES.get('user_id',0)
 			userid= check_secure_value(userid)
-			user=User.objects.filter(id=userid).first()
+			author=User.objects.filter(id=userid).first()
 			title= bg.cleaned_data['title']
 			content=bg.cleaned_data['content']
 			content=content.replace('\n', '<br>')
-			p=Post(title= title, content=content,user= user)
+			p=Post(title= title, content=content,author= author)
 			p.save()
 			return redirect(reverse('blog:onepost',args=(p.pk,)))
 
@@ -103,7 +117,7 @@ class Profile(TemplateView):
 		user=""
 		userid= check_secure_value(userid)
 		if userid:
-			posts=Post.objects.filter(user=userid)
+			posts=Post.objects.filter(author=userid)
 			user=User.objects.filter(id=userid).first()
 			return render(request, "blog/profile.html",{'user':user,'posts':posts})
 		else:
@@ -209,8 +223,6 @@ class Login(TemplateView):
 
 class Signup(TemplateView):
 	def get(self,request):
-		Post.objects.all().delete()
-		User.objects.all().delete()
 		sig=SignupForm(request.GET)
 		response=render(request,"blog/signup.html",)
 		response.set_cookie('user_id','')
@@ -257,7 +269,7 @@ class Signup(TemplateView):
 
 class FacebookData(TemplateView):
 	def get(self, request):
-		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
+		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=657925015003816&redirect_uri=http://localhost:8000/blog/dataa&client_secret=7ded865c46b21425850884d1c6994c46&code='
 		URL2="https://graph.facebook.com/me?access_token="
 		code=request.GET['code']
 		code=URL+str(code)

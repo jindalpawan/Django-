@@ -33,8 +33,10 @@
   <div class="limiter">
     <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
     <div class="wrap-contact100">
+      <form method ="post" id="ff">
+      {% csrf_token %}
       <span >
-      {{post.user.name}}
+      {{post.author.name}}
       </span>
       <span class="label-input100">
       {{post.datecreated}}
@@ -47,9 +49,37 @@
         <div class="">
           {{post.content | safe }}
         </div>
-      </div>  
+      </div>
+      <div class="wrap-input100" >
+        <span class="label-input100">Comment</span>
+        <textarea class="input100" id="x2" name="msg" placeholder="Write somethink..." ></textarea>
+        <span class="focus-input100"></span>
+      </div>
+      {% if cmnts %}
+        <span>Other Comments:</span>
+        <br>
+          {% for cmnt in cmnts %}
+              <span style="color: black;">
+                <b>{{cmnt.user.name}}</b>
+                </span>
+                <span >
+                {{cmnt.msg | safe}}
+              </span>  
+            <br>
+          {% endfor %}
+      {% endif %}
+    </form>
     </div>
   </div>
-
+</div>
+<script>
+var input = document.getElementById("x2");
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   document.getElementById("ff").submit();
+  }
+});
+</script>
 </body>
 </html>
