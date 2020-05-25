@@ -83,7 +83,8 @@ def comments(request):
 				cmt=Comment(user=user,post=post,msg=msg)
 				cmt.save()
 			return JsonResponse({"msg":msg},)
-		return JsonResponse({},)	
+		return JsonResponse({},)
+
 
 class NewPost(TemplateView):
 	def get(self,request):
