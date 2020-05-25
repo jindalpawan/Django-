@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from .models import Post , User, Comment
@@ -10,6 +10,7 @@ import urllib3
 import json
 import random
 import hashlib
+from django.views.decorators.csrf import csrf_exempt
 
 str1="asdfghjklpoiuytrewqzxcvbnm"
 
@@ -66,20 +67,22 @@ class Perma(TemplateView):
 		else:
 			return render(request, "blog/perma.html",{'post':obj,'cmnts':cmnts})
 	
-class Comments(DetailView):
-	def get(self, request):
+
+@csrf_exempt
+def comments(request):
+	if request.method== 'POST':
 		userid=request.COOKIES.get('user_id',0)
 		user=""
 		userid= check_secure_value(userid)
-		print(userid)
 		if userid:
 			user=User.objects.filter(id=userid).first()
-			postid=request.GET['postid']
-			msg=request.GET['msg']
+			postid=request.POST['postid']
+			msg=request.POST['msg']
 			post= Post.objects.filter(pk=postid).first()
 			cmt=Comment(user=user,post=post,msg=msg)
 			cmt.save()
-			return HttpResponse("0")
+			return JsonResponse({"msg":msg},)
+		return JsonResponse({},)	
 
 class NewPost(TemplateView):
 	def get(self,request):

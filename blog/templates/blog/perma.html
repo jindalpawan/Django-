@@ -76,18 +76,18 @@
 
 <script type="text/javascript">
     $("#xyz").click(function(){
-        $.ajax({
-            type:'GET',
+      $.ajax({
+            type:'POST',
             url:"{% url 'blog:cmnt' %}",
             data:{
               msg:$('#x2').val(),
-              postid:$("#xyz").attr("data-id")
+              postid:$("#xyz").attr("data-id"),
             },
             sucess:function(){
-              $("x2").val(" ");}
+            }
         });
-
     });
+
 </script>
 <!--
 <script>
