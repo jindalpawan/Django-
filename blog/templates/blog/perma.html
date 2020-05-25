@@ -49,12 +49,11 @@
       </div>
       <form method ="post">
       {% csrf_token %}
-        <input type="hidden" id="postid">
+        <input type="hidden" id="xyz" data-id="{{post.pk}}">
       <div class="wrap-input100" >
         <span class="label-input100">Comment</span>
         <textarea class="input100" id="x2" name="msg" placeholder="Write somethink..." ></textarea>
         <span class="focus-input100"></span>
-        <input type="button" id="xyz" data-id="{{post.pk}}" value="SUBMIT">
       </div>
       </form>
       {% if cmnts %}
@@ -73,10 +72,12 @@
     </div>
   </div>
 </div>
-
-<script type="text/javascript">
-    $("#xyz").click(function(){
-      $.ajax({
+<script>
+var input = document.getElementById("x2");
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   $.ajax({
             type:'POST',
             url:"{% url 'blog:cmnt' %}",
             data:{
@@ -86,19 +87,9 @@
             sucess:function(){
             }
         });
-    });
-
-</script>
-<!--
-<script>
-var input = document.getElementById("x2");
-input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-   event.preventDefault();
-   document.getElementById("xyz").submit();
+   document.getElementById("x2").value =""
   }
 });
 </script>
-!-->
 </body>
 </html>

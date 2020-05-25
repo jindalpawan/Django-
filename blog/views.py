@@ -78,9 +78,10 @@ def comments(request):
 			user=User.objects.filter(id=userid).first()
 			postid=request.POST['postid']
 			msg=request.POST['msg']
-			post= Post.objects.filter(pk=postid).first()
-			cmt=Comment(user=user,post=post,msg=msg)
-			cmt.save()
+			if len(msg)>0:
+				post= Post.objects.filter(pk=postid).first()
+				cmt=Comment(user=user,post=post,msg=msg)
+				cmt.save()
 			return JsonResponse({"msg":msg},)
 		return JsonResponse({},)	
 
@@ -262,13 +263,7 @@ class Signup(TemplateView):
 				response.set_cookie('user_id',cookie_id)
 				return response
 		else:
-			username= sig.cleaned_data['username']
-			name=sig.cleaned_data['name']
-			email=sig.cleaned_data['email']
-			password=sig.cleaned_data['password']
-			vpass=sig.cleaned_data['vpass']
-			dic={'username': username, 'name':name, 'email':email}
-			return render(request,'blog/signup.html',dic)	
+			return render(request,'blog/signup.html',)	
 
 
 class FacebookData(TemplateView):
