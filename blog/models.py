@@ -34,3 +34,6 @@ class Comment(models.Model):
 	post=models.ForeignKey(Post, on_delete=models.CASCADE)
 	msg=models.TextField()
 	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return self.msg

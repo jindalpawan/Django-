@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from .models import Post , User, Comment
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm, EditPasswordForm, CommentForm
 from django.utils import timezone
 from datetime import datetime
@@ -65,20 +65,21 @@ class Perma(TemplateView):
 			return render(request, "blog/perma.html",{'post':obj,'user':user,'cmnts':cmnts})
 		else:
 			return render(request, "blog/perma.html",{'post':obj,'cmnts':cmnts})
-	def post(self, request,pk):
-		bg=CommentForm(request.POST)
-		if bg.is_valid():
-			print(bg.errors)
-			userid=request.COOKIES.get('user_id',0)
-			userid= check_secure_value(userid)
+	
+class Comments(DetailView):
+	def get(self, request):
+		userid=request.COOKIES.get('user_id',0)
+		user=""
+		userid= check_secure_value(userid)
+		print(userid)
+		if userid:
 			user=User.objects.filter(id=userid).first()
-			msg= bg.cleaned_data['msg']
-			l=len(msg)-4
-			msg=msg[:l]
-			obj= Post.objects.filter(pk=pk).first()
-			x=Comment(post=obj,user=user,msg=msg)
-			x.save()
-			return redirect(reverse('blog:onepost',args=[pk,]))
+			postid=request.GET['postid']
+			msg=request.GET['msg']
+			post= Post.objects.filter(pk=postid).first()
+			cmt=Comment(user=user,post=post,msg=msg)
+			cmt.save()
+			return HttpResponse("0")
 
 class NewPost(TemplateView):
 	def get(self,request):
