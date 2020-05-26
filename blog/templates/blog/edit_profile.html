@@ -18,7 +18,7 @@
         <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
             <div class="header-right">
               <a href= "{% url 'blog:home' %}">Home</a>
-              {% if user %}
+              {% if request.user.is_authenticated %}
                 <a class="margn-rgt margn-lft" href="{% url 'blog:profile' %}">Profile</a>
                 <a href="{% url 'blog:signup' %}">Logout</a>
               {% else %}
@@ -47,11 +47,21 @@
                     </div>
                     <div class="p-t-10 p-b-5 wid">
                         <span class="txt1">
-                            Name
+                            First Name
                         </span>
                     </div>
                     <div class="wrap-input100 ">
-                        <input class="input100" type="text" name="name" required value="{{name}}">
+                        <input class="input100" type="text" name="first_name" required value="{{first_name}}">
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <div class="p-t-10 p-b-5 wid">
+                        <span class="txt1">
+                            Last Name
+                        </span>
+                    </div>
+                    <div class="wrap-input100 ">
+                        <input class="input100" type="text" name="last_name" required value="{{last_name}}">
                         <span class="focus-input100"></span>
                     </div>
 

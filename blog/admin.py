@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import User, Post
+from .models import Post
+from django.contrib.auth.models import User
 
 class UserAdmin(admin.ModelAdmin):
-	fields= ['username', 'name', 'email','password']
+	fields= ['username', 'password','email']
 
 class PostAdmin(admin.ModelAdmin):
 	fields= ['title', 'content','user']
-
-admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 # Register your models here.

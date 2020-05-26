@@ -1,6 +1,7 @@
 from django import forms
-from .models import Post, User, Comment
+from .models import Post, Comment
 from datetime import datetime
+from django.contrib.auth.models import User
 class NewpostForm(forms.ModelForm):
 	class Meta:
 		model= Post
@@ -10,7 +11,7 @@ class SignupForm(forms.ModelForm):
 	vpass=forms.CharField(max_length=70)
 	class Meta:
 		model=User
-		fields=['username', 'name', 'email', 'password']
+		fields=['username', 'first_name', 'last_name', 'email','password']
 
 
 class LoginForm(forms.ModelForm):
@@ -22,7 +23,7 @@ class LoginForm(forms.ModelForm):
 class EditProfileForm(forms.ModelForm):
 	class Meta:
 		model=User
-		fields=['username', 'name', 'email']
+		fields=['username', 'first_name', 'last_name', 'email']
 
 
 class EditPasswordForm(forms.ModelForm):
