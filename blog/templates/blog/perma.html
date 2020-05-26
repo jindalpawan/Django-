@@ -56,6 +56,11 @@
         <span class="focus-input100"></span>
       </div>
       </form>
+      <span>
+        <span id="total_likes"></span>
+        <input type="button" id="like" post_is={{post.pk}} value="Like">
+          Like
+      </span>
       {% if cmnts %}
         <span>Other Comments:</span>
         <br>
@@ -72,6 +77,25 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+  $("#like").click(function()
+  {
+    $.ajax({
+      type:'POST',
+      url:"{% url 'blog:like' %}",
+      data:{
+        'post_id':$(this).attr('post.id') },
+      dataType:"json",
+      success:function(reponse){
+        $("total_likes").text("reponse.likes_count");
+        $(this).val("reponse.msg");
+
+      }
+    });
+  });
+
+</script>
+
 <script>
 var input = document.getElementById("x2");
 input.addEventListener("keyup", function(event) {
@@ -91,5 +115,6 @@ input.addEventListener("keyup", function(event) {
   }
 });
 </script>
+
 </body>
 </html>

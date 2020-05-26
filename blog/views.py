@@ -66,6 +66,24 @@ def comments(request):
 			return JsonResponse({"msg":msg},)
 		return JsonResponse({},)
 
+
+@csrf_exempt
+def PostLike(request):
+	if request.method== 'POST':
+		user=request.user
+		if user.is_authenticated:
+			postid=request.POST['postid']
+			post= Post.objects.filter(pk=postid).first()
+			if post.likes.filter(id=user.id).exist():
+				post.likes.remove(user)
+				msg="Like"
+			else:	
+				post.likes.add(user)
+				msg="Unlike"
+			response={'like_count': post.total_likes, 'msg':msg, }
+			return JsonResponse(response, content_type='application/json')
+		return JsonResponse({},)
+
 '''
 def comments(request, postid):
 	if request.method== 'GET':
