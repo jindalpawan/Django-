@@ -213,10 +213,13 @@ class EditPassword(TemplateView):
 			return render(request,'blog/edit_pass.html',)	
 
 
+
+
+
 class Login(TemplateView):
 	def get(self, request):
 		log=LoginForm(request.GET)
-		return render(request,"blog/login.html",)
+		return render(request,"blog/login.html",{'id':id})
 		logout(request)
 
 	def post(self, request):
@@ -237,7 +240,7 @@ class Signup(TemplateView):
 	def get(self,request):
 		sig=SignupForm(request.GET)
 		logout(request)
-		return render(request,"blog/signup.html",)
+		return render(request,"blog/signup.html",{'id':id})
 
 	def post(self, request):
 		sig=SignupForm(request.POST)
@@ -286,6 +289,8 @@ class FacebookData(TemplateView):
 		rr= lib.request('GET', URL2)
 		data2= json.loads(rr.data.decode('utf-8'))
 		username= str(data2['id'])
+		if not username:
+			return redirect(reverse('blog:signup',))
 		name= str(data2['name'])
 		password=username
 		obj= User.objects.filter(username=username).first()
