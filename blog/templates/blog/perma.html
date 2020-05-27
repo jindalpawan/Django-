@@ -32,7 +32,7 @@
   </div>
   <div class="limiter">
     <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
-    <div class="wrap-contact100">
+    <div class="wrap-contact101">
       {{post.author.name}}
       </span>
       <span class="label-input100">
@@ -56,13 +56,12 @@
         <span class="focus-input100"></span>
       </div>
       </form>
-      <span>
-        <span id="total_likes"></span>
-        <input type="button" id="like" post_is={{post.pk}} value="Like">
-          Like
-      </span>
-      {% if cmnts %}
+      <div>
+        <span id="total_likes">{{post.total_likes}}</span>
+        <button type="button" id="like" post_id={{post.pk}}>Like</button>
         <span>Other Comments:</span>
+      </div>
+      {% if cmnts %}
         <br>
           {% for cmnt in cmnts %}
               <span style="color: black;">
@@ -84,11 +83,11 @@
       type:'POST',
       url:"{% url 'blog:like' %}",
       data:{
-        'post_id':$(this).attr('post.id') },
+        'post_id':$(this).attr('post_id') },
       dataType:"json",
-      success:function(reponse){
-        $("total_likes").text("reponse.likes_count");
-        $(this).val("reponse.msg");
+      success:function(response){
+        $("#total_likes").text(response.like_count);
+        $("#like").text(response.msg);
 
       }
     });

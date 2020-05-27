@@ -72,16 +72,16 @@ def PostLike(request):
 	if request.method== 'POST':
 		user=request.user
 		if user.is_authenticated:
-			postid=request.POST['postid']
+			postid=request.POST['post_id']
 			post= Post.objects.filter(pk=postid).first()
-			if post.likes.filter(id=user.id).exist():
+			if post.likes.filter(id=user.id).first():
 				post.likes.remove(user)
 				msg="Like"
 			else:	
 				post.likes.add(user)
 				msg="Unlike"
-			response={'like_count': post.total_likes, 'msg':msg, }
-			return JsonResponse(response, content_type='application/json')
+			response={'like_count': post.total_likes(), 'msg':msg,}
+			return JsonResponse(response,)
 		return JsonResponse({},)
 
 '''
@@ -171,7 +171,6 @@ class EditProfile(TemplateView):
 			return redirect(reverse('blog:profile',))
 		
 		else:
-			print(sig.errors)
 			return render(request,"blog/edit_profile.html",)	
 
 
@@ -289,7 +288,7 @@ class FacebookData(TemplateView):
 		obj= User.objects.filter(username=username).first()
 		if not obj:
 			name=list(name.split(' '))
-			obj= User(username=username, first_name=name[0],last_name=name[1], email="", password=password)
+			obj= User.objects.create_user(username=username, first_name=name[0],last_name=name[1], email="", password=password)
 			obj.save()
 		login(request, obj)
 		return redirect(reverse('blog:home',))
