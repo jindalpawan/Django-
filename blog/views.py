@@ -15,7 +15,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, login, authenticate
 
 
-
 str1="asdfghjklpoiuytrewqzxcvbnm"
 
 def make_salt(length = 5):
@@ -38,6 +37,32 @@ class HomePage(TemplateView):
 		user=request.user
 		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date').reverse()
 		return render(request, 'blog/front.html', {'alldata':posts})
+
+
+class NewPost(TemplateView):
+	def get(self,request):
+		bg=NewpostForm(request.GET)
+		user=None
+		user=request.user
+		if user.is_authenticated:
+			return render(request,"blog/newpost.html",{'user':user})
+		else:
+			return redirect(reverse('blog:signup',))
+
+	def post(self, request):
+		bg=NewpostForm(request.POST)
+		if bg.is_valid():
+			author=request.user
+			title= bg.cleaned_data['title']
+			content=bg.cleaned_data['content']
+			content=content.replace('\n', '<br>')
+			p=Post(title= title, content=content,author= author)
+			p.save()
+			return redirect(reverse('blog:onepost',args=(p.pk,)))
+		else:
+			title= bg.cleaned_data['title']
+			content=bg.cleaned_data['content']
+			return render(request, 'blog/newpost.html',{'title': title, 'content':content})
 
 
 class Perma(TemplateView):
@@ -65,8 +90,10 @@ def comments(request):
 				post= Post.objects.filter(pk=postid).first()
 				cmt=Comment(user=user,post=post,msg=msg)
 				cmt.save()
-			return JsonResponse({"msg":msg},)
-		return JsonResponse({},)
+				response['reply']:"submit"
+				return JsonResponse(response,)
+			response['reply']:"You mast have to login first"
+		return JsonResponse(response)
 
 
 @csrf_exempt
@@ -102,32 +129,6 @@ def AllComments(request):
 			alldata.append(x)
 		return JsonResponse(alldata,safe=False)
 
-class NewPost(TemplateView):
-	def get(self,request):
-		bg=NewpostForm(request.GET)
-		user=None
-		user=request.user
-		if user.is_authenticated:
-			return render(request,"blog/newpost.html",{'user':user})
-		else:
-			return redirect(reverse('blog:signup',))
-
-	def post(self, request):
-		bg=NewpostForm(request.POST)
-		if bg.is_valid():
-			author=request.user
-			title= bg.cleaned_data['title']
-			content=bg.cleaned_data['content']
-			content=content.replace('\n', '<br>')
-			p=Post(title= title, content=content,author= author)
-			p.save()
-			return redirect(reverse('blog:onepost',args=(p.pk,)))
-
-		else:
-			title= bg.cleaned_data['title']
-			content=bg.cleaned_data['content']
-			return render(request, 'blog/newpost.html',{'title': title, 'content':content})
-
 
 class Profile(TemplateView):
 	def get(self,request):
@@ -138,6 +139,7 @@ class Profile(TemplateView):
 			return render(request, "blog/profile.html",{'user':user,'posts':posts})
 		else:
 			return redirect(reverse('blog:signup',))
+
 
 class EditProfile(TemplateView):
 	def get(self,request):

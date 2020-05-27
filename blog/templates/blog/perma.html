@@ -1,137 +1,50 @@
-<!DOCTYPE html>
+{% extends 'blog/home.html' %}
 {% load static %}
-<html lang="en">
-<head>
-  <title>Post</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.min.css' %}">
-<!--===============================================================================================-->
-  <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
-<!--===============================================================================================-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-</head>
-<body>
-  <div class="header">
-    <div class="newp">
-      <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
+{% block content %}
+<div class="limiter">
+  <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
+  <div class="wrap-contact101">
+    {{post.author.first_name}} {{post.author.last_name}}
+    </span>
+    <span class="label-input100">
+    {{post.datecreated}}
+    </span>
+    <br>
+    <span class="contact100-form-title">
+        {{post.title | safe }}
+    </span>
+    <div class="wrap-input100" >
+      <div class="">
+        {{post.content | safe }}
+      </div>
     </div>
-    <div class="header-right">
-      <a href="{% url 'blog:home' %}" >Home</a>
-      {% if request.user.is_authenticated %}
-        <a href="{% url 'blog:profile' %}" class="margn-rgt margn-lft">{{request.user.first_name}}</a>
-        <a href="{% url 'blog:signup' %}">Logout</a>
-      {% else %}
-        <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
-        <a href="{% url 'blog:signup' %}">Signup</a>
-      {% endif %}
+    <form method ="post">
+    {% csrf_token %}
+      <input type="hidden" id="xyz" data-id="{{post.pk}}">
+    <div class="wrap-input101" >
+      <span class="label-input100">Comment</span>
+      <textarea class="input100" id="x2" name="msg" placeholder="Write somethink..." ></textarea>
+      <hr>
     </div>
-  </div>
-  <div class="limiter">
-    <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
-    <div class="wrap-contact101">
-      {{post.author.name}}
+    </form>
+    <div class="l-c-section">
+      <span class="newp">
+        <button id="total_likes">
+          {{post.total_likes}}
+        </button>
+        <button type="button" id="like" >Like</button>
       </span>
-      <span class="label-input100">
-      {{post.datecreated}}
-      </span>
-      <br>
-      <span class="contact100-form-title">
-          {{post.title | safe }}
-      </span>
-      <div class="wrap-input100" >
-        <div class="">
-          {{post.content | safe }}
-        </div>
+      <span>
+      <button id="comments">Comments</button>
+    </span>
+    </div>
+    <div id="tb">
+    {% if cmnts %}
+      <div id="cmnttable">
       </div>
-      <form method ="post">
-      {% csrf_token %}
-        <input type="hidden" id="xyz" data-id="{{post.pk}}">
-      <div class="wrap-input100" >
-        <span class="label-input100">Comment</span>
-        <textarea class="input100" id="x2" name="msg" placeholder="Write somethink..." ></textarea>
-        <span class="focus-input100"></span>
-      </div>
-      </form>
-      <div class="l-c-section">
-        <span class="newp">
-          <button id="total_likes">
-            {{post.total_likes}}
-          </button>
-          <button type="button" id="like" >Like</button>
-        </span>
-        <span>
-        <button id="comments">Comments</button>
-      </span>
-      </div>
-      {% if cmnts %}
-        <div id="cmnttable">
-        </div>
-      {% endif %}
+    {% endif %}
     </div>
   </div>
 </div>
-<script type="text/javascript">
-  $("#comments").click(function(){
-    $.ajax({
-      type:'GET',
-      url:"{% url 'blog:cmntes' %}",
-      data:{
-        'postid':$("#xyz").attr('data-id')
-      },
-      dataType:"json",
-      success:function(alldata){
-        var data=$('<table>')
-        var s=" ";
-        for(var i=0; i<alldata.length;i++)
-        {
-          data+=('<tr> <td><b>'+ alldata[i][0]+'\xa0\xa0'+ '</b></td><td>'+alldata[i][1] + '</td></tr>')
-        }
-        data+=$('</table>')
-        $("#cmnttable").html(data)
-      }
-    });
-  });
-</script>
-<script type="text/javascript">
-  $("#like").click(function()
-  {
-    $.ajax({
-      type:'POST',
-      url:"{% url 'blog:like' %}",
-      data:{
-        'post_id':$("#xyz").attr('data-id') },
-      dataType:"json",
-      success:function(response){
-        $("#total_likes").text(response.like_count);
-        $("#like").text(response.msg);
-
-      }
-    });
-  });
-</script>
-<script>
-var input = document.getElementById("x2");
-input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-   event.preventDefault();
-   $.ajax({
-            type:'POST',
-            url:"{% url 'blog:cmnt' %}",
-            data:{
-              msg:$('#x2').val(),
-              postid:$("#xyz").attr("data-id"),
-            },
-            sucess:function(){
-            }
-        });
-   document.getElementById("x2").value =""
-  }
-});
-</script>
-
-</body>
-</html>
+</div>
+{% endblock %}

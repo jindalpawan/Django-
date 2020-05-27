@@ -79,6 +79,16 @@ margin-bottom: 10px;
   border-radius: 4px;
 }
 
+.l-c-section button:hover {
+  background-color: #d6d6c2;
+  color: black;
+}
+
+
+#total_likes{
+  background: #e0e0d1;
+}
+
 .header a:hover {
   background-color: #99c2ff;
   color: black;
@@ -263,7 +273,7 @@ iframe {
 }
 
 .wrap-contact100 {
-  width: 900px;
+  width: 600px;
   overflow-wrap: break-word;
   background: #e0e0d1;
   letter-spacing: 1px;
@@ -275,7 +285,7 @@ iframe {
 .wrap-contact101 {
   width: 900px;
   height: 100%;
-  min-height: 100vh;
+  min-height: 80vh;
   overflow-wrap: break-word;
   background: #e0e0d1;
   border-radius: 10px;
@@ -353,7 +363,7 @@ iframe {
 .focus-input100 {
   position: absolute;
   display: block;
-  width: 100%;
+  width: 600px;
   height: 100%;
   top: 0;
   left: 0;

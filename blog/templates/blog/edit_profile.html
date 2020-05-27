@@ -2,7 +2,9 @@
 <html lang="en">
 {% load static %}
 <head>
-    <title>Profile</title>
+    {% block title %}
+      <title>Editprofile</title>
+    {% endblock %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
@@ -14,19 +16,20 @@
 
 </head>
 <body>
-    <div class="header">
-        <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
-            <div class="header-right">
-              <a href= "{% url 'blog:home' %}">Home</a>
-              {% if request.user.is_authenticated %}
-                <a class="margn-rgt margn-lft" href="{% url 'blog:profile' %}">Profile</a>
-                <a href="{% url 'blog:signup' %}">Logout</a>
-              {% else %}
-                <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
-                <a href="{% url 'blog:signup' %}">Signup</a>
-              {% endif %}
-            </div>
+<div class="header">
+    <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
+        <div class="header-right">
+          <a href= "{% url 'blog:home' %}">Home</a>
+          {% if request.user.is_authenticated %}
+            <a class="margn-rgt margn-lft" href="{% url 'blog:profile' %}">Profile</a>
+            <a href="{% url 'blog:signup' %}">Logout</a>
+          {% else %}
+            <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
+            <a href="{% url 'blog:signup' %}">Signup</a>
+          {% endif %}
         </div>
+    </div>
+{% block content %}
     <div class="limiter">
         <div class="container-login100" style="background-image: url({% static 'images/bg-02.jpg' %});">
             <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
@@ -97,6 +100,6 @@
             </div>
         </div>
     </div>
-    
+{% endblock %}
 </body>
 </html>

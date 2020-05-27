@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'blog/signup.html' %}
 {% load static %}
-<head>
-	<title>Login</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'blog/bootstrap.min.css' %}">
-<!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/mainl.css'  %}">
-<!--===============================================================================================-->
-
-</head>
-<body>
-	
+{% block title %}
+  <title>Login</title>
+{% endblock %}
+{% block content %}
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url({% static 'images/bg-02.jpg' %});">
 			<div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
@@ -73,10 +62,4 @@
 			</div>
 		</div>
 	</div>
-	
-<!---  
-
-!--->
-
-</body>
-</html>
+{% endblock %}

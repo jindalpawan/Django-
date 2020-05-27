@@ -1,75 +1,49 @@
-<!DOCTYPE html>
+{% extends 'blog/home.html' %}
 {% load static %}
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Profile</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!--===============================================================================================-->
-		  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.css' %}">
-		  <link rel="stylesheet" type="text/css" href="{% static 'blog/font-awesome.min.css' %}">
-		<!--===============================================================================================-->
-		  <link rel="stylesheet" type="text/css" href="{% static 'blog/util.css' %}">
-		  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
-		<!--===============================================================================================-->
-
-	</head>
-
-	<body>
-		<div class="header">
-		     <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
-		    <div class="header-right">
-		      <a href= "{% url 'blog:home' %}">Home</a>
-		      {% if request.user.is_authenticated %}
-		        <a class="margn-rgt margn-lft" href="{% url 'blog:editprofile' %}">Edit Profile</a>
-		        <a href="{% url 'blog:signup' %}">Logout</a>
-		      {% else %}
-		        <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
-		        <a href="{% url 'blog:signup' %}">Signup</a>
-		      {% endif %}
-		    </div>
-		</div>
-
-		<div class="limiter">
-			<div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
-			<div class="wrap-contact100">
-				<form class="contact100-form">
-					<h1><b>
-						{{user.first_name}} {{user.last_name}}
-					</b></h1>
-					<br>
-					<span class="contact100-form-title">Genral Details-</span>
-					<div >
-					  Username: {{user.username}}	
-					</div>
-					{% if user.email %}
-					<div>
-						Email: {{user.email}}
-					</div>
-					{% endif %}
-					{% for p in posts %}
-					    <span class="contact100-form-title">Posts:</span>
-					    <span >
-							<a href="{% url 'blog:onepost' p.pk %}"
-							    class="contact100-form-title"
-							    style="text-decoration: none">{{p.title | safe}}
-							</a>
-						</span>
-						<span class="label-input101">
-							{{p.datecreated}}
-						</span>
-						<div class="wrap-input100" >
-						  <div >
-						    {{p.Contents | safe}}
-						  </div>
-						</div>
-						<br>
-					{% endfor %}
-				</form>
-
+{% block title %}
+  <title>Profile</title>
+  {% endblock %}
+{% block user_name %}
+	<a class="margn-rgt margn-lft" href="{% url 'blog:editprofile' %}">Edit Profile</a>
+{% endblock %}
+{% block content %}
+<div class="limiter">
+	<div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
+	<div class="wrap-contact100">
+		<form class="contact100-form">
+			<h1><b>
+				{{user.first_name}} {{user.last_name}}
+			</b></h1>
+			<br>
+			<span class="contact100-form-title">Genral Details-</span>
+			<div >
+			  Username: {{user.username}}	
 			</div>
-		</div>
-		</div>
-	</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
-</html>
-
+			{% if user.email %}
+			<div>
+				Email: {{user.email}}
+			</div>
+			{% endif %}
+			{% for p in posts %}
+			    <span class="contact100-form-title">Posts:</span>
+			    <span >
+					<a href="{% url 'blog:onepost' p.pk %}"
+					    class="contact100-form-title"
+					    style="text-decoration: none">{{p.title | safe}}
+					</a>
+				</span>
+				<span class="label-input101">
+					{{p.datecreated}}
+				</span>
+				<div class="wrap-input100" >
+				  <div >
+				    {{p.Contents | safe}}
+				  </div>
+				</div>
+				<br>
+			{% endfor %}
+		</form>
+	</div>
+</div>
+</div>
+{% endblock %}
