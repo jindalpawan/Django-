@@ -19,16 +19,16 @@
     <div class="newp">
       <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
     </div>
-        <div class="header-right">
-          <a href="{% url 'blog:home' %}" >Home</a>
-          {% if request.user.is_authenticated %}
-            <a href="{% url 'blog:profile' %}" class="margn-rgt margn-lft">{{request.user.first_name}}</a>
-            <a href="{% url 'blog:signup' %}">Logout</a>
-          {% else %}
-            <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
-            <a href="{% url 'blog:signup' %}">Signup</a>
-          {% endif %}
-        </div>
+    <div class="header-right">
+      <a href="{% url 'blog:home' %}" >Home</a>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'blog:profile' %}" class="margn-rgt margn-lft">{{request.user.first_name}}</a>
+        <a href="{% url 'blog:signup' %}">Logout</a>
+      {% else %}
+        <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
+        <a href="{% url 'blog:signup' %}">Signup</a>
+      {% endif %}
+    </div>
   </div>
   <div class="limiter">
     <div class="container-login100" style="background-image: url({%static 'images/bg-01.jpg' %});">
@@ -56,26 +56,46 @@
         <span class="focus-input100"></span>
       </div>
       </form>
-      <div>
-        <span id="total_likes">{{post.total_likes}}</span>
-        <button type="button" id="like" post_id={{post.pk}}>Like</button>
-        <span>Other Comments:</span>
+      <div class="l-c-section">
+        <span class="newp">
+          <button id="total_likes">
+            {{post.total_likes}}
+          </button>
+          <button type="button" id="like" >Like</button>
+        </span>
+        <span>
+        <button id="comments">Comments</button>
+      </span>
       </div>
       {% if cmnts %}
-        <br>
-          {% for cmnt in cmnts %}
-              <span style="color: black;">
-                <b>{{cmnt.user.first_name}} {{cmnt.user.last_name}}</b>
-                </span>
-                <span >
-                {{cmnt.msg | safe}}
-              </span>
-            <br>
-          {% endfor %}
+        <div id="cmnttable">
+        </div>
       {% endif %}
     </div>
   </div>
 </div>
+<script type="text/javascript">
+  $("#comments").click(function(){
+    $.ajax({
+      type:'GET',
+      url:"{% url 'blog:cmntes' %}",
+      data:{
+        'postid':$("#xyz").attr('data-id')
+      },
+      dataType:"json",
+      success:function(alldata){
+        var data=$('<table>')
+        var s=" ";
+        for(var i=0; i<alldata.length;i++)
+        {
+          data+=('<tr> <td><b>'+ alldata[i][0]+'\xa0\xa0'+ '</b></td><td>'+alldata[i][1] + '</td></tr>')
+        }
+        data+=$('</table>')
+        $("#cmnttable").html(data)
+      }
+    });
+  });
+</script>
 <script type="text/javascript">
   $("#like").click(function()
   {
@@ -83,7 +103,7 @@
       type:'POST',
       url:"{% url 'blog:like' %}",
       data:{
-        'post_id':$(this).attr('post_id') },
+        'post_id':$("#xyz").attr('data-id') },
       dataType:"json",
       success:function(response){
         $("#total_likes").text(response.like_count);
@@ -92,9 +112,7 @@
       }
     });
   });
-
 </script>
-
 <script>
 var input = document.getElementById("x2");
 input.addEventListener("keyup", function(event) {

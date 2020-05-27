@@ -43,12 +43,14 @@ class HomePage(TemplateView):
 class Perma(TemplateView):
 	def get(self,request, pk):
 		obj= Post.objects.filter(pk=pk).first()
-		cmnts=Comment.objects.filter(post=obj)
+		cmnts=Comment.objects.filter(post=obj).first()
+		if cmnts:
+			cmnts=True
 		user=request.user
 		if user.is_authenticated:
 			return render(request, "blog/perma.html",{'post':obj,'user':user,'cmnts':cmnts})
 		else:
-			return render(request, "blog/perma.html",{'post':obj,'cmnts':cmnts})
+			return render(request, "blog/perma.html",{'post':obj})
 	
 
 @csrf_exempt
@@ -84,22 +86,21 @@ def PostLike(request):
 			return JsonResponse(response,)
 		return JsonResponse({},)
 
-'''
-def comments(request, postid):
+
+def AllComments(request):
 	if request.method== 'GET':
-		user=None
-		userid= check_secure_value(userid)
-		if userid:
-			
-			postid=request.POST['postid']
-			msg=request.POST['msg']
-			if len(msg)>0:
-				post= Post.objects.filter(pk=postid).first()
-				cmt=Comment(user=user,post=post,msg=msg)
-				cmt.save()
-			return JsonResponse({"msg":msg},)
-		return JsonResponse({},)
-'''
+		postid=request.GET['postid']
+		post=Post.objects.filter(id=postid).first()
+		allcmnts= Comment.objects.filter(post=post)
+		alldata=[]
+		for cmnt in allcmnts:
+			x=[]
+			s=cmnt.user.first_name
+			s=s+" " + cmnt.user.last_name
+			x.append(s)
+			x.append(cmnt.msg)
+			alldata.append(x)
+		return JsonResponse(alldata,safe=False)
 
 class NewPost(TemplateView):
 	def get(self,request):

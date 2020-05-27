@@ -7,6 +7,7 @@ urlpatterns = [
     path('post/<int:pk>/', views.Perma.as_view(), name='onepost'),
     path('newpost/', views.NewPost.as_view(), name='newpost'),
     path('post/comment/', views.comments, name='cmnt'),
+    path('post/comments/', views.AllComments, name='cmntes'),
     path('post/like/', views.PostLike, name='like'),
     path('signup/', views.Signup.as_view(), name='signup'),
     path('login/', views.Login.as_view(), name='login'),
