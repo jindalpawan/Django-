@@ -35,7 +35,7 @@ class HomePage(TemplateView):
 	def get(self, request):
 		user=None
 		user=request.user
-		posts= Post.objects.filter(create_date__lte=timezone.now()).order_by('create_date').reverse()
+		posts= Post.objects.all().order_by('create_date').reverse()
 		return render(request, 'blog/front.html', {'alldata':posts})
 
 
