@@ -15,5 +15,5 @@ urlpatterns = [
     path('user/editpass/', views.EditPassword.as_view(), name='editpass'),
     path('user/profile/', views.Profile.as_view(), name='profile'),
     path('dataa', views.FacebookData.as_view(), name='facebookdata'),
-    #path('', views.perma, name='perma'),
+    
 ]
