@@ -219,7 +219,7 @@ class EditPassword(TemplateView):
 class Login(TemplateView):
 	def get(self, request):
 		log=LoginForm(request.GET)
-		return render(request,"blog/login.html",{'id':id})
+		return render(request,"blog/login.html",)
 		logout(request)
 
 	def post(self, request):
@@ -240,7 +240,7 @@ class Signup(TemplateView):
 	def get(self,request):
 		sig=SignupForm(request.GET)
 		logout(request)
-		return render(request,"blog/signup.html",{'id':id})
+		return render(request,"blog/signup.html",)
 
 	def post(self, request):
 		sig=SignupForm(request.POST)

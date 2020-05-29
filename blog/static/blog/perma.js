@@ -5,7 +5,7 @@ $("#like").click(function()
       console.log("000");
       $.ajax({
         type:'POST',
-        url:'/blog/post/like/',
+        url:'/post/like/',
         data:{
           'post_id':$("#xyz").attr('data-id') },
         dataType:"json",
@@ -24,7 +24,7 @@ $("#like").click(function()
     $("#comments").click(function(){
       $.ajax({
         type:'GET',
-        url:'/blog/post/comments/',
+        url:'/post/comments/',
         data:{
           'postid':$("#xyz").attr('data-id')
         },
@@ -55,7 +55,7 @@ $("#like").click(function()
        event.preventDefault();
        $.ajax({
                 type:'POST',
-                url:'/blog/post/comment/',
+                url:'/post/comment/',
                 data:{
                   msg:$('#x2').val(),
                   postid:$("#xyz").attr("data-id"),
