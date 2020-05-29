@@ -91,6 +91,7 @@ def comments(request):
 				response['reply']:"submit"
 				return JsonResponse(response,)
 			response['reply']:"You mast have to login first"
+		response={}
 		return JsonResponse(response)
 
 
@@ -109,6 +110,7 @@ def PostLike(request):
 				msg="Unlike"
 			response={'like_count': post.total_likes(), 'msg':msg,}
 			return JsonResponse(response,)
+		response={}
 		return JsonResponse({},)
 
 
