@@ -90,8 +90,7 @@ def comments(request):
 				cmt.save()
 				response['reply']:"submit"
 				return JsonResponse(response,)
-			response['reply']:"You mast have to login first"
-		response={}
+		response['reply']:"You mast have to login first"
 		return JsonResponse(response)
 
 
