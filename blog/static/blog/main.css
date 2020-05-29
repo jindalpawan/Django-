@@ -21,7 +21,7 @@
 *{box-sizing: border-box;}
 .header {
   overflow: hidden;
-  background-color: #0066ff;
+  background-color: #4da6ff;
   
 }
 .l-c-section {
@@ -89,7 +89,7 @@ margin-bottom: 10px;
 }
 
 .header a:hover {
-  background-color: #99c2ff;
+  background-color: #3385ff;
   color: black;
 }
 
@@ -98,8 +98,6 @@ margin-bottom: 10px;
   float: right;
   margin-right: 20px;
 }
-
-
 
 * {
 	margin: 0px; 
@@ -265,10 +263,11 @@ iframe {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 15px;
+  
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  background-color:#99ccff 
 }
 
 .wrap-contact100 {
