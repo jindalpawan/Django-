@@ -33,8 +33,6 @@ def valid_pw(name, password, h):
 
 class HomePage(TemplateView):
 	def get(self, request):
-		user=None
-		user=request.user
 		posts= Post.objects.all().order_by('create_date').reverse()
 		return render(request, 'blog/front.html', {'alldata':posts})
 
