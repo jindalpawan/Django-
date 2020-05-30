@@ -60,10 +60,15 @@ $("#like").click(function()
                   msg:$('#x2').val(),
                   postid:$("#xyz").attr("data-id"),
                 },
-                sucess:function(){
+                dataType:"json",
+                success:function(response){
+                  if(response.reply==0)
+                  {
+                    alert("Login require..");
+                  }
+                  document.getElementById("x2").value ="";
                 }
             });
-       document.getElementById("x2").value =""
       }
     });
 }

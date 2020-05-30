@@ -32,7 +32,11 @@
         <button id="total_likes">
           {{post.total_likes}}
         </button>
-        <button type="button" id="like" >Like</button>
+        {% if request.user.is_authenticate %}
+          <button type="button" id="like" >{{like}}</button>
+        {% else %}
+          <button type="button" id="like" >Like</button>
+        {% endif %}
       </span>
       <span>
       <button id="comments">Show Comments</button>

@@ -51,15 +51,20 @@ class NewPost(TemplateView):
 
 class Perma(TemplateView):
 	def get(self,request, pk):
-		obj= Post.objects.filter(pk=pk).first()
-		cmnts=Comment.objects.filter(post=obj).first()
+		post= Post.objects.filter(pk=pk).first()
+		cmnts=Comment.objects.filter(post=post).first()
 		if cmnts:
 			cmnts=True
 		user=request.user
 		if user.is_authenticated:
-			return render(request, "blog/perma.html",{'post':obj,'user':user,'cmnts':cmnts})
+			like=post.likes.filter(id=user.id).first()
+			if like:
+				like="Unlike"
+			else:
+				like="Like"
+			return render(request, "blog/perma.html",{'post':post,'cmnts':cmnts, 'like':like})
 		else:
-			return render(request, "blog/perma.html",{'post':obj})
+			return render(request, "blog/perma.html",{'post':post})
 	
 
 @csrf_exempt
@@ -74,10 +79,10 @@ def comments(request):
 				post= Post.objects.filter(pk=postid).first()
 				cmt=Comment(user=user,post=post,msg=msg)
 				cmt.save()
-				response['reply']:"submit"
-				return JsonResponse(response,)
-		response['reply']:"You mast have to login first"
-		return JsonResponse(response)
+			response={'reply':1,}
+			return JsonResponse(response,)
+		response={'reply':0,}
+		return JsonResponse(response,)
 
 
 @csrf_exempt
@@ -96,7 +101,7 @@ def PostLike(request):
 			response={'like_count': post.total_likes(), 'msg':msg,}
 			return JsonResponse(response,)
 		response={}
-		return JsonResponse({},)
+		return JsonResponse(response,)
 
 
 def AllComments(request):
