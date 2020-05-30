@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from .models import Post, Comment
 from django.views.generic import TemplateView, DetailView
-from .forms import NewpostForm, SignupForm, LoginForm, EditProfileForm, EditPasswordForm, CommentForm
+from .forms import NewpostForm, SignupForm, EditProfileForm, EditPasswordForm, CommentForm
 from django.utils import timezone
 from datetime import datetime
 import urllib3
@@ -13,22 +13,8 @@ import hashlib
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, login, authenticate
+import os
 
-
-str1="asdfghjklpoiuytrewqzxcvbnm"
-
-def make_salt(length = 5):
-    return ''.join(random.choice(str1) for x in range(length))
-
-def make_pw_hash(name, pw, salt = None):
-	if not salt:
-		salt = make_salt()
-	h = (hashlib.sha256((name + pw + salt).encode()).hexdigest())
-	return '%s,%s' % (salt, h)
-
-def valid_pw(name, password, h):
-	salt = h.split(',')[0]
-	return h == make_pw_hash(name, password, salt)
 
 
 class HomePage(TemplateView):
@@ -213,33 +199,30 @@ class EditPassword(TemplateView):
 
 
 
-
+fbid = os.environ.get('fbid')
 
 class Login(TemplateView):
 	def get(self, request):
-		log=LoginForm(request.GET)
-		return render(request,"blog/login.html",)
 		logout(request)
+		return render(request,"blog/login.html",{'id':fbid})
 
 	def post(self, request):
-		log=LoginForm(request.POST)
-		if log.is_valid():
-			username= log.cleaned_data['username']
-			password=log.cleaned_data['password']
-			obj = authenticate(request,username=username, password=password)
-			if user is not None:
-				login(request, user)
-				return redirect(reverse('blog:home',))
-			else:
-				dic={'username':username,'error_password':"Username or Password not matcheds"}
-				return render(request,"blog/login.html",dic)
+		username= request.POST['username']
+		password= request.POST['password']
+		user = authenticate(username=username, password=password)
+		if user is not None:
+			login(request, user)
+			return redirect(reverse('blog:home',))
+		else:
+			dic={'username':username,'error_password':"Username or Password not matcheds"}
+			return render(request,"blog/login.html",dic)
 
 
 class Signup(TemplateView):
 	def get(self,request):
 		sig=SignupForm(request.GET)
 		logout(request)
-		return render(request,"blog/signup.html",)
+		return render(request,"blog/signup.html",{'id':fbid})
 
 	def post(self, request):
 		sig=SignupForm(request.POST)
@@ -265,7 +248,6 @@ class Signup(TemplateView):
 				dic['email']=email
 				return render(request,'blog/signup.html',dic)
 			else:
-				password=make_pw_hash(username, password)
 				p=User.objects.create_user(username=username, first_name=first_name,last_name=last_name, email= email, password=password)
 				p.save()
 				login(request, p)
@@ -276,7 +258,8 @@ class Signup(TemplateView):
 
 class FacebookData(TemplateView):
 	def get(self, request):
-		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=&redirect_uri=http://localhost:8000/blog/dataa&client_secret=&code='
+		fbscurekey= os.environ.get('fbscurekey')
+		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=%s&redirect_uri=https://pawanjindal.herokuapp.com/dataa&client_secret=%s&code='%(fbid,fbscurekey)
 		URL2="https://graph.facebook.com/me?access_token="
 		code=request.GET['code']
 		code=URL+str(code)

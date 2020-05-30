@@ -27,7 +27,8 @@
         {% block user_name %}
           <a href="{% url 'blog:profile' %}" class="margn-rgt margn-lft">{{request.user.first_name}}</a>
         {% endblock %} 
-        <a href="{% url 'blog:signup' %}">Logout</a>
+        {% block logout %}
+        {% endblock %}
       {% else %}
         <a href="{% url 'blog:login' %}" class="margn-rgt margn-lft">Login</a>
         <a href="{% url 'blog:signup' %}">Signup</a>

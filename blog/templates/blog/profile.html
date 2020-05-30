@@ -6,6 +6,9 @@
 {% block user_name %}
 	<a class="margn-rgt margn-lft" href="{% url 'blog:editprofile' %}">Edit Profile</a>
 {% endblock %}
+{% block logout %}
+  <a href="{% url 'blog:signup' %}">Logout</a>
+{% endblock %}
 {% block content %}
 <div class="limiter">
 	<div class="container-login100">
