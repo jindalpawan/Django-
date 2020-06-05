@@ -12,10 +12,6 @@ $("#like").click(function()
         success:function(response){
           $("#total_likes").text(response.like_count);
           $("#like").text(response.msg);
-        },
-        error:function()
-        {
-          console.log("1111")
         }
       });
     });
