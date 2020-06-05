@@ -254,7 +254,6 @@ class Signup(TemplateView):
 				return render(request,'blog/signup.html',dic)
 			else:
 				p=User.objects.create_user(username=username, first_name=first_name,last_name=last_name, email= email, password=password)
-				p.save()
 				login(request, p)
 				return redirect(reverse('blog:home',))
 		else:
@@ -284,6 +283,5 @@ class FacebookData(TemplateView):
 		if not obj:
 			name=list(name.split(' '))
 			obj= User.objects.create_user(username=username, first_name=name[0],last_name=name[1], email="", password=password)
-			obj.save()
 		login(request, obj)
 		return redirect(reverse('blog:home',))
