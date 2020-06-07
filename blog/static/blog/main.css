@@ -45,14 +45,9 @@ margin-bottom: 10px;
   width: 400px;
 }
 
-.header a.active {
-  background-color: #006bb3;
-  color: black;
-}
-
 .header a.pctive {
-  background-color: #00004d;
-  color: white;
+  color: black;
+  margin-right: 5px;
 }
 .header a {
   float: left;

@@ -21,6 +21,8 @@
     <div class="newp">
       <a href="{% url 'blog:newpost' %}" class="pctive" >New Blog</a>
     </div>
+    {% block del %}
+    {% endblock %}
     <div class="header-right">
       <a href="{% url 'blog:home' %}">Home</a>
       {% if request.user.is_authenticated %}

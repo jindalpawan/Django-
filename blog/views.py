@@ -62,9 +62,23 @@ class Perma(TemplateView):
 				like="Unlike"
 			else:
 				like="Like"
-			return render(request, "blog/perma.html",{'post':post,'cmnts':cmnts, 'like':like})
+			
+			delete=False
+			if user==post.author:
+				delete=True
+			return render(request, "blog/perma.html",{'post':post,'cmnts':cmnts, 'like':like, 'delete': delete})
 		else:
 			return render(request, "blog/perma.html",{'post':post})
+
+
+class PostDelete(TemplateView):
+	def get(self,request, pk):
+		post= Post.objects.filter(pk=pk).first()
+		user=request.user
+		if user.is_authenticated and user==post.author:
+			post.delete()
+		return redirect(reverse('blog:home',))
+		
 	
 
 @csrf_exempt

@@ -1,5 +1,12 @@
 {% extends 'blog/home.html' %}
 {% load static %}
+{% block del %}
+  {% if delete %}
+    <div class="newp">
+      <a href="{% url 'blog:deletepost' post.pk%}" class="pctive" >Delete</a>
+    </div> 
+  {% endif %}
+{% endblock %}
 {% block content %}
 <div class="limiter">
   <div class="container-login100">
