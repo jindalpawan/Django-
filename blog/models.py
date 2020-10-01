@@ -4,6 +4,7 @@ import datetime
 from django.contrib.auth.models import User
 
 class Post(models.Model):
+	sno = models.AutoField(primary_key = True)
 	author= models.ForeignKey(User, on_delete=models.CASCADE)
 	title= models.TextField()
 	content=models.TextField()
