@@ -6,14 +6,14 @@ It is made with "Django" a python framework.
 
 It has the following functionalities:'
 
-  A. Post:
+  1. Post:
     1. Add Post
     2. Delete Post
     3. Like Post
     4. Comment On Post
     5. And Of Course View Post
   
-  B. User
+  2. User
     1. User Signin
     2. User SignUp
     3. User Password Reset
