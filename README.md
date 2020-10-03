@@ -30,4 +30,3 @@ To get involved in this project
  2. Make it better.
  3. Commit your changes.
  4. Create a pull request.
- 5. Wallah 🎉🎉🎉🎉🎉
