@@ -4,16 +4,16 @@ It is a blogging website for everyone for those who want to write poems to them 
 
 It is made with "Django" a python framework.
 
-It has the following functionalities:'
+It has the following functionalities:
 
-  A. Post:
+ - Post:
     1. Add Post
     2. Delete Post
     3. Like Post
     4. Comment On Post
     5. And Of Course View Post
   
-  B. User
+ - User
     1. User Signin
     2. User SignUp
     3. User Password Reset
