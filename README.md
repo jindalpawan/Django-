@@ -60,7 +60,7 @@ Note: Ubuntu 16.04 LTS is recommended to use for the development environment.
 
 1. Run the following git clone (specify a directory of your choosing if you like):
 
-        git clone https://github.com/jindalpawan/Portal-using-rest-api
+        git clone https://github.com/jindalpawan/Django
 
 2. Run virtualenv on the git cloned directory to setup the Python virtual environment:
 
