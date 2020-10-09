@@ -1,8 +1,8 @@
 # Blog Portal
 
-It is a blogging website for everyone for those who want to write poems to them who want to write books.
+It is a blogging website for everyone who wants to write. Like poems to books.
 
-It is made with "Django" a python framework.
+It is create with "Django" a python framework.
 
 It has the following functionalities:
 
