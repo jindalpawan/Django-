@@ -64,11 +64,11 @@ Note: Ubuntu 16.04 LTS is recommended to use for the development environment.
 
 2. Run virtualenv on the git cloned directory to setup the Python virtual environment:
 
-        virtualenv drf
+        virtualenv Django
 
 3. cd into the name of the directory into which you cloned the git repository
 
-        cd portaldrf
+        cd Django
 
 4. After activating the virtual environment, install the dependencies
 
