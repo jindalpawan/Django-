@@ -277,7 +277,7 @@ class Signup(TemplateView):
 class FacebookData(TemplateView):
 	def get(self, request):
 		fbscurekey= os.environ.get('fbscurekey')
-		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=%s&redirect_uri=https://pawanjindal.herokuapp.com/dataa&client_secret=%s&code='%(fbid,fbscurekey)
+		URL= 'https://graph.facebook.com/v6.0/oauth/access_token?client_id=%s&redirect_uri=https://uploadsomethinks.herokuapp.com/dataa&client_secret=%s&code='%(fbid,fbscurekey)
 		URL2="https://graph.facebook.com/me?access_token="
 		code=request.GET['code']
 		code=URL+str(code)
